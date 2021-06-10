@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace约定为接口的全限定名-->
+<mapper namespace="com.qf.mapper.BrandMapper">
+
+    <resultMap id="selectBrandsByCategoryIdMap" type="Brand">
+        <id column="brand_id" property="brandId"/>
+        <result column="brand_name" property="brandName"/>
+    </resultMap>
+
+    <select id="selectBrandsByCategoryId" resultMap="selectBrandsByCategoryIdMap">
+        select *
+        from tb_category tc
+                 inner join tb_category_brand tcb on tc.category_id = tcb.fk_category_id
+                 inner join tb_brand tb on tcb.fk_brand_id = tb.brand_id
+        where tc.category_id = #{categoyrId};
+    </select>
+
+
+</mapper>
