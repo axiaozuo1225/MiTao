@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author
@@ -17,4 +18,7 @@ public class Brand implements Serializable {
 
     private Integer brandId;
     private String brandName;
+    private String brandImg;
+
+    private List<Goods> goodList;
 }

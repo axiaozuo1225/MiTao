@@ -4,8 +4,8 @@ import com.qf.entity.Category;
 import com.qf.service.com.qf.service.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -19,17 +19,9 @@ public class CategoryController {
 
     @RequestMapping("show")
     @ResponseBody
-    public List<Category> showCategory() {
-        return category.showCategory();
+    public List<Category> showCategory(@RequestParam(required = false) String categoryId) {
+
+        return category.showCategory(categoryId);
     }
 
-    @RequestMapping("showById")
-    @ResponseBody
-    public Category showCategoryById(@RequestBody String categoryId) {
-
-//        System.out.println(categoryId);
-
-        return category.showCategoryById(categoryId);
-//        System.out.println(category);
-    }
 }

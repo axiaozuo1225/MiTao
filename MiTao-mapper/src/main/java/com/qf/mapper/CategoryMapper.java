@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface CategoryMapper {
 
-    List<Category> selectCategory();
+    List<Category> selectCategory(String categoryId);
 
-    Category selectCategoryById(String categoryId);
 }

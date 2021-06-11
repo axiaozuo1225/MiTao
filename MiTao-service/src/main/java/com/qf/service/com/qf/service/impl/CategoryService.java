@@ -16,24 +16,13 @@ public class CategoryService implements ICategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
-    @Autowired
-    private BrandMapper brandMapper;
-
     @Override
-    public List<Category> showCategory() {
-        return categoryMapper.selectCategory();
+    public List<Category> showCategory(String categoryId) {
+
+        List<Category> categories = categoryMapper.selectCategory(categoryId);
+
+        return categories;
+
     }
-
-    @Override
-    public Category showCategoryById(String categoryId) {
-
-        Category category = categoryMapper.selectCategoryById(categoryId);
-        List<Brand> brands = brandMapper.selectBrandsByCategoryId(categoryId);
-        category.setBrandList(brands);
-
-//        System.out.println(category);
-        return category;
-    }
-
 
 }

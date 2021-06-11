@@ -6,12 +6,36 @@
 <!--namespace约定为接口的全限定名-->
 <mapper namespace="com.qf.mapper.CategoryMapper">
 
-    <select id="selectCategory" resultType="Category">
-        select * from tb_category
+
+    <resultMap id="CategoryMap" type="Category">
+        <id column="category_id" property="categoryId"/>
+        <result column="category_name" property="categoryName"/>
+        <result column="category_title" property="categoryTitle"/>
+        <collection property="brandList" ofType="Brand">
+            <id column="brand_id" property="brandId"/>
+            <result column="brand_name" property="brandName"/>
+<!--            <collection property="goodList" ofType="Goods">-->
+<!--                <id column="goods_id" property="goodsId"/>-->
+<!--                <result column="goods_name" property="goodsName"/>-->
+<!--                <result column="goods_img" property="goodsImg"/>-->
+<!--                <result column="goods_cost" property="goodsCost"/>-->
+<!--            </collection>-->
+        </collection>
+
+    </resultMap>
+
+    <select id="selectCategory" resultMap="CategoryMap">
+        select *
+        from tb_category tc
+        left join tb_category_brand tcb on tc.category_id = tcb.fk_category_id
+        left join tb_brand tb on tcb.fk_brand_id = tb.brand_id
+
+        <where>
+            <if test="categoryId != null">
+               and tc.category_id = #{categoryId}
+            </if>
+        </where>
     </select>
 
-    <select id="selectCategoryById" resultType="Category">
-        select * from tb_category where category_id = #{categoryId}
-    </select>
 
 </mapper>

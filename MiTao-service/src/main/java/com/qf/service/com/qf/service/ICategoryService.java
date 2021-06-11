@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface ICategoryService {
 
-    List<Category> showCategory();
+    List<Category> showCategory(String categoryId);
 
-    Category showCategoryById(String categoryId);
 }
