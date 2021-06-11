@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 瀹炰綋绫伙細
@@ -19,4 +20,7 @@ public class Category implements Serializable {
 
     private Integer categoryId;
     private String categoryName;
+    private String categoryTitle;
+
+    private List<Brand> brandList;
 }

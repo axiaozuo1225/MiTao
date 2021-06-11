@@ -160,16 +160,25 @@
 
     var show = function (categoryId) {
 
+        // console.log(categoryId)
+        // $("#strong").text();
+
         $.ajax({
-            url: "brand/show",
-            type: "Post",
+            url: "category/showById",
+            type: "POST",
             contentType: "application/json",
             data: JSON.stringify(categoryId),
 
             success: function (data) {
+
+                // console.log(data)
+
+                var brandList = data.brandList;
+                $("#strong").text(data.categoryName);
+
                 var contant = "";
-                for (let i = 0; i < data.length; i++) {
-                    contant += "<a href='ershouhtc.html'>" + data[i].brandName + "</a><em>|</em>";
+                for (let i = 0; i < brandList.length; i++) {
+                    contant += "<img src='../images/goods/apple.png'><a href='ershouhtc.html'>" + brandList[i].brandName + "</a><em>|</em>";
                 }
                 $("#phoneBrand").html(contant);
             },
@@ -177,6 +186,21 @@
         })
     }
 
+
+    $(function () {
+        $.ajax({
+            url: "category/show",
+            type: "POST",
+            success: function (data) {
+                var content = "";
+                for (let i = 0; i < data.length; i++) {
+                    content += "<dd class='item' onmouseover=show("+data[i].categoryId+")><a href='ershoushouji.html' title='"+data[i].categoryTitle+"'><b class='item"+(i+1)+"'>&nbsp;</b><em>"+data[i].categoryName+"</em><span>&nbsp;</span></a></dd>";
+                }
+                $("#cateList").append(content);
+            },
+            dataType: "json"
+        })
+    })
 
 </script>
 <!--查询结果-->
@@ -187,28 +211,28 @@
             <em></em>
         </div>
         <div class="side_left">
-            <dl class="side_list">
+            <dl id="cateList" class="side_list">
                 <dt>搜索结果分类</dt>
 
 
-                <dd class="item" onmouseover="show(1)"><a href="ershoushouji.html" title="手机回收价格评估"><b
-                        class="item1" >&nbsp;</b><em>手机</em><span>&nbsp;</span></a></dd>
+<!--                <dd class='item' onmouseover='show(1)'><a href='ershoushouji.html' title='手机回收价格评估'><b class='item1'>&nbsp;</b><em>手机</em><span>&nbsp;</span></a></dd>-->
 
 
-                <dd class="item" onmouseover="show(2)"><a href="ershoupingguo.html" title="苹果系列回收价格评估"><b
-                        class="item2">&nbsp;</b><em>苹果系列</em><span>&nbsp;</span></a></dd>
-                <dd class="item" onmouseover="show(3)"><a href="ershoupingban.html" title="平板电脑回收价格评估"><b
-                        class="item3">&nbsp;</b><em>平板电脑</em><span>&nbsp;</span></a></dd>
-                <dd class="item" onmouseover="show(4)"><a href="ershoubijiben.html" title="笔记本回收价格评估"><b
-                        class="item4">&nbsp;</b><em>笔记本</em><span>&nbsp;</span></a></dd>
-                <dd class="item" onmouseover="show(5)"><a href="ershoushumaxiangji.html" title="数码相机回收价格评估"><b
-                        class="item5">&nbsp;</b><em>数码相机</em><span>&nbsp;</span></a></dd>
-                <dd class="item" onmouseover="show(6)"><a href="ershouyouxiji.html" title="游戏机回收价格评估"><b
-                        class="item6">&nbsp;</b><em>游戏机</em><span>&nbsp;</span></a></dd>
-                <dd class="item" onmouseover="show(7)"><a href="ershoujingtou.html" title="镜头回收价格评估"><b class="item7">&nbsp;</b><em>镜头</em><span>&nbsp;</span></a>
-                </dd>
-                <dd class="item" onmouseover="show(8)"><a href="wurenji.html" title="无人机回收价格评估"><b class="item8">&nbsp;</b><em>无人机</em><span>&nbsp;</span></a>
-                </dd>
+<!--                <dd class="item" onmouseover="show(2)"><a href="ershoupingguo.html" title="苹果系列回收价格评估"><b-->
+<!--                        class="item2">&nbsp;</b><em>苹果系列</em><span>&nbsp;</span></a></dd>-->
+<!--                <dd class="item" onmouseover="show(3)"><a href="ershoupingban.html" title="平板电脑回收价格评估"><b-->
+<!--                        class="item3">&nbsp;</b><em>平板电脑</em><span>&nbsp;</span></a></dd>-->
+<!--                <dd class="item" onmouseover="show(4)"><a href="ershoubijiben.html" title="笔记本回收价格评估"><b-->
+<!--                        class="item4">&nbsp;</b><em>笔记本</em><span>&nbsp;</span></a></dd>-->
+<!--                <dd class="item" onmouseover="show(5)"><a href="ershoushumaxiangji.html" title="数码相机回收价格评估"><b-->
+<!--                        class="item5">&nbsp;</b><em>数码相机</em><span>&nbsp;</span></a></dd>-->
+<!--                <dd class="item" onmouseover="show(6)"><a href="ershouyouxiji.html" title="游戏机回收价格评估"><b-->
+<!--                        class="item6">&nbsp;</b><em>游戏机</em><span>&nbsp;</span></a></dd>-->
+<!--                <dd class="item" onmouseover="show(7)"><a href="ershoujingtou.html" title="镜头回收价格评估"><b class="item7">&nbsp;</b><em>镜头</em><span>&nbsp;</span></a>-->
+<!--                </dd>-->
+<!--                <dd class="item" onmouseover="show(8)"><a href="wurenji.html" title="无人机回收价格评估"><b-->
+<!--                        class="item8">&nbsp;</b><em>无人机</em><span>&nbsp;</span></a>-->
+<!--                </dd>-->
 
 
             </dl>
@@ -236,7 +260,7 @@
             <!--全部手机品牌-->
             <div class="brand">
                 <div class='title2'><span><a href='goods.html'>
-                    <strong>手机</strong> 品牌</a></span></div>
+                    <strong id="strong">手机</strong> 品牌</a></span></div>
                 <div class="brand_main">
                     <div id="phoneBrand" class='brand_hots'>
 
