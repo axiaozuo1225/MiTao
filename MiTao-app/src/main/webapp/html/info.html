@@ -25,8 +25,53 @@
         var categoryName = localStorage.getItem("categoryName");
         var brandName = localStorage.getItem("brandName");
         var goodsId = localStorage.getItem("goodsId");
-        console.log(goodsId)
 
+        //显示评估详情
+        var evl = function (goodsId) {
+            $.ajax({
+                url: "evl/showType",
+                type: "GET",
+                contentType: "application/json",
+                data: {"goodsId": goodsId},
+                success: function (data) {
+
+
+                    for (let i = 0; i < data.length; i++) {
+                        var content = "";
+
+                        var basic = data[i];
+
+                        // console.log(basic)
+
+                        var basicInfos = basic.evlBasicList;
+
+                        for (let j = 0; j < basicInfos.length; j++) {
+
+                            var basicInfo = basicInfos[j];
+                            content += "<dd><input type='hidden' name='property[]' id='property_version' value='0'/>\n" +
+                                "                    <div class='property_title'><h3>" + basicInfo.basicInfoName + "</h3></div><ul>";
+
+                            var basicTils = basicInfo.evlDetailList;
+                            for (let k = 0; k < basicTils.length; k++) {
+
+                                var basicTil = basicTils[k];
+                                content += "<li class='' onClick='property_click(this,\"version\",\"725\")' name='basicInfo" + j + "'><div class='pro_div'>\n" +
+                                    "                        <span class='property_value'><i>" + basicTil.infoDetailName + "</i><ins>" + basicTil.infoDetailDesc + "</ins></span><span class='gou'></span></div></li>\n";
+                            }
+                            content += "<div class='clear'></div></ul></dd>";
+
+                        }
+
+                        content += "<div id='step1_nav' class='property_nav' ><div id='btn_step1_next' class='btn_next' onclick='step1_next()'>下一步</div></div>";
+                        $("#step" + i).html(content);
+
+                    }
+
+
+                },
+                dataType: "json"
+            })
+        }
 
         $(function () {
 
@@ -39,14 +84,42 @@
                 type: "GET",
                 contentType: "application/json",
                 success: function (data) {
+
+
                     $("#title").append("&gt;" + data.goodsName);
 
+                    var content = "<div class='heat_img'><img src='../images/goods/" + data.goodsImg + "' alt='" + data.goodsName + "回收价格评估' width='220' height='220'/></div>\n" +
+                        "            <div class='heat_txt'><div class='heat_name'><span>" + data.goodsName + "</span></div><dl class='heat_ts'><dd><em>" + data.goodsMinPrice + "</em>元<br/>30天内回收最高价</dd><dt class='clear'></dt></dl>";
+
+                    content += "<div class='heat_bao'><img src='../images/new_images/icon10.gif' alt='回收免费享受第三方理赔服务'/>可免费享受第三方理赔服务</div>\n" +
+                        "                <div class='clear'></div></div><div class='clear'></div>";
+
+                    $("#heat_l").html(content);
+
+
+                    var prices = [data.goodsFirstPrice, data.goodsSecondPrice, data.goodsThirdPrice, data.goodsForthPrice, data.goodsFifthPrice];
+                    var day_data = [
+                        {"elapsed": "7", "价格": prices[0]}
+                        , {"elapsed": "8", "价格": prices[1]}
+                        , {"elapsed": "9", "价格": prices[2]}
+                        , {"elapsed": "10", "价格": prices[3]}
+                        , {"elapsed": "11", "价格": prices[4]}
+                    ];
+                    Morris.Line({
+                        element: 'graph',
+                        data: day_data,
+                        xkey: 'elapsed',
+                        ykeys: ['价格'],
+                        labels: ['价格'],
+                        parseTime: false
+                    });
                 },
                 dataType: "json"
-            })
+            });
 
-
-        })
+            //显示评估详情
+            evl(goodsId);
+        });
 
 
     </script>
@@ -147,24 +220,14 @@
         <div id="title" style="height:30px; line-height:30px; font-size:14px;"><a href="">首页</a>
             <!--            <a href='../html/index.html'>手机</a> &gt;<a href='../html/index.html'> iPhone</a> &gt; iphone 7-->
         </div>
-        <div class="heat_l">
-            <div class="heat_img">
-                <img src="../images/goods/iphone7.png" alt="iphone 7回收价格评估"
-                     width="220" height="220"/>
-            </div>
-            <div class="heat_txt">
-                <div class="heat_name"><span>iphone 7</span></div>
-                <dl class="heat_ts">
-                    <dd><em>3360</em>元<br/>
-                        30天内回收最高价
-                    </dd>
-                    <dt class="clear"></dt>
-                </dl>
-                <div class="heat_bao"><img src="../images/new_images/icon10.gif" alt="iphone 7回收免费享受第三方理赔服务"/>可免费享受第三方理赔服务
-                </div>
-                <div class="clear"></div>
-            </div>
-            <div class="clear"></div>
+        <div class="heat_l" id="heat_l">
+
+
+            <!-- <div class='heat_img'><img src='../images/goods/iphone7.png' alt='iphone 7回收价格评估' width='220' height='220'/></div>
+             <div class='heat_txt'><div class='heat_name'><span>iphone 7</span></div><dl class='heat_ts'><dd><em>3360</em>元<br/>30天内回收最高价</dd><dt class='clear'></dt></dl>
+                 <div class='heat_bao'><img src='../images/new_images/icon10.gif' alt='回收免费享受第三方理赔服务'/>可免费享受第三方理赔服务</div>
+                 <div class='clear'></div></div><div class='clear'></div>-->
+
         </div>
         <script src="../js/new_js/morris/raphael-2.1.0.min.js"></script>
         <script src="../js/new_js/morris/morris.js"></script>
@@ -174,28 +237,17 @@
             <div class="heat_pic">
                 <div id="graph" style="width:360px; height:210px; margin-top:0px;"></div>
             </div>
-            <script>
-                var day_data = [
-                    {"elapsed": "7", "价格": "2614"}
-                    , {"elapsed": "8", "价格": "2607"}
-                    , {"elapsed": "9", "价格": "2660"}
-                    , {"elapsed": "10", "价格": "2822"}
-                    , {"elapsed": "11", "价格": "2929"}
-                ];
-                Morris.Line({
-                    element: 'graph',
-                    data: day_data,
-                    xkey: 'elapsed',
-                    ykeys: ['价格'],
-                    labels: ['价格'],
-                    parseTime: false
-                });
-            </script>
+            <!--            <script type="text/javascript">-->
+
+
+            <!--            </script>-->
         </div>
         <div class="clear"></div>
     </div>
 </div>
 <!--手机回收-->
+
+
 <!--评估流程-->
 <div id="ahs_trade_body">
     <input type="hidden" id="view" value="goods_info"/>
@@ -217,58 +269,47 @@
     <div id="ahs_property_body">
         <!--第一步-->
         <div id="property_step1">
-            <dl>
-                <dd>
-                    <input type="hidden" name="property[]" id="property_version" value="0"/>
-                    <div class="property_title"><h3>版本</h3></div>
-                    <ul>
-                        <li class="" onClick="property_click(this,'version','725')" name="sx_child_1">
-                            <div class="pro_div"><span class="property_value"><i>大陆行货</i><ins>内地购买，有“进网许可证”标签。</ins></span><span
-                                    class="gou"></span></div>
-                        </li>
-                        <li class="" onClick="property_click(this,'version','725')" name="sx_child_1">
-                            <div class="pro_div"><span class="property_value"><i>香港行货</i><ins>香港购买，全球联保。</ins></span><span
-                                    class="gou"></span></div>
-                        </li>
-                        <li class="" onClick="property_click(this,'version','725')" name="sx_child_1">
-                            <div class="pro_div"><span class="property_value"><i>移动版</i><ins>移动版</ins></span><span
-                                    class="gou"></span></div>
-                        </li>
-                        <div class="clear"></div>
-                    </ul>
+            <dl id="step0">
 
-                </dd>
-                <div id="step1_nav" class="property_nav">
-                    <div id="btn_step1_next" class="btn_next">下一步</div>
-                </div>
+                <!--                <dd><input type='hidden' name='property[]' id='property_version' value='0'/>-->
+                <!--                    <div class='property_title'><h3>版本</h3></div>-->
+                <!--                    -->
+                <!--                    <ul>-->
+                <!--                        <li class='' onClick='property_click(this,"version","725")' name='sx_child_1'><div class='pro_div'>-->
+                <!--                        <span class='property_value'><i>大陆行货</i><ins>内地购买，有“进网许可证”标签。</ins></span><span class='gou'></span></div></li>-->
+                <!--                        <div class='clear'></div>-->
+                <!--                    </ul>-->
+                <!--                    -->
+<!--                </dd>-->
+<!--                <div id='step1_nav' class='property_nav'>-->
+<!--                    <div id='btn_step1_next' class='btn_next'>下一步</div>-->
+<!--                </div>-->
+
             </dl>
         </div>
         <!--第一步-->
         <!--第二步-->
         <div id="property_step2" class="hide">
-            <dl>
-                <dd>
-                    <div class="property_title">
-                        <h3>功能情况（可多选或不选）</h3>
-                    </div>
-                    <ul>
-                        <input type="hidden" name="desc_pid[]" value="944"/>
-                        <input type="hidden" name="desc_id[]" id="desc_id_944" value="945"/>
-                        <li onClick="item_click(this,'944','946','945')" name="mx_child_944">
-                            <div class="pro_div"><span class="property_value"><i>有换机</i><ins>系统型号N开头（针对在保机器，2次以上按保修过保处理，含2次）</ins></span>
-                                <span class="gou"></span></div>
-                        </li>
-                        <li onClick="item_click(this,'944','946','945')" name="mx_child_944">
-                            <div class="pro_div"><span class="property_value"><i>机身进水或受潮</i><ins>机身防水标发红/机身受潮/机板发霉</ins></span>
-                                <span class="gou"></span></div>
-                        </li>
-                        <li onClick="item_click(this,'944','946','945')" name="mx_child_944">
-                            <div class="pro_div"><span class="property_value"><i>蓝牙/wifi功能不正常</i><ins>蓝牙/wifi功能不正常</ins></span>
-                                <span class="gou"></span></div>
-                        </li>
-                        <div class="clear"></div>
-                    </ul>
-                </dd>
+            <dl id="step1">
+<!--                <dd><div class='property_title'><h3>功能情况（可多选或不选）</h3></div><ul>-->
+
+<!--&lt;!&ndash;                        <input type="hidden" name="desc_pid[]" value="944"/>&ndash;&gt;-->
+<!--                        <input type='hidden' name='desc_id[]' id='desc_id_944' value='945'/>-->
+<!--                        <li onClick='item_click(this,"944","946","945")' name='mx_child_944'>-->
+<!--                            <div class='pro_div'><span class='property_value'><i>有换机</i><ins>系统型号N开头（针对在保机器，2次以上按保修过保处理，含2次）</ins></span>-->
+<!--                                <span class='gou'></span></div>-->
+<!--                        </li>-->
+<!--                        <li onClick="item_click(this,'944','946','945')" name="mx_child_944">-->
+<!--                            <div class="pro_div"><span class="property_value"><i>机身进水或受潮</i><ins>机身防水标发红/机身受潮/机板发霉</ins></span>-->
+<!--                                <span class="gou"></span></div>-->
+<!--                        </li>-->
+<!--                        <li onClick="item_click(this,'944','946','945')" name="mx_child_944">-->
+<!--                            <div class="pro_div"><span class="property_value"><i>蓝牙/wifi功能不正常</i><ins>蓝牙/wifi功能不正常</ins></span>-->
+<!--                                <span class="gou"></span></div>-->
+<!--                        </li>-->
+<!--                        <div class="clear"></div>-->
+<!--                    </ul>-->
+<!--                </dd>-->
             </dl>
             <div id="step2_nav" class="property_nav">
                 <div id="btn_step2_back" class="btn_back">< 返回上一步</div>
@@ -278,25 +319,27 @@
         <!--第二步-->
         <!--第三步-->
         <div id="property_step3" class="hide">
-            <dl>
-                <dd class="" id="pingu_mx_659">
-                    <input type="hidden" name="desc_pid[]" value="659"/>
-                    <input type="hidden" name="desc_id[]" id="desc_id_659" value="0"/>
-                    <div class="property_title"><h3>外观情况</h3></div>
-                    <ul>
-                        <li class="" onClick="item_click(this,'659','660')" name="mx_child_659">
-                            <div class="pro_div"><span class="property_value"><i>全新机</i><ins>原封未拆/未使用（需提供身份证及购机发票，无法提供不回收）</ins></span><span
-                                    class="gou"></span></div>
-                        </li>
-                        <li class="" onClick="item_click(this,'659','660')" name="mx_child_659">
-                            <div class="pro_div"><span class="property_value"><i>完好无破损</i><ins>触摸屏完好，无破损失灵现象</ins></span><span
-                                    class="gou"></span></div>
-                        </li>
+            <dl id="step2">
+<!--                <dd class="" id="pingu_mx_659">-->
+<!--                    <input type="hidden" name="desc_pid[]" value="659"/>-->
+<!--                    <input type="hidden" name="desc_id[]" id="desc_id_659" value="0"/>-->
+<!--                    <div class="property_title"><h3>外观情况</h3></div>-->
+<!--                    <ul>-->
+<!--                        <li class="" onClick="item_click(this,'659','660')" name="mx_child_659">-->
+<!--                            <div class="pro_div"><span class="property_value"><i>全新机</i><ins>原封未拆/未使用（需提供身份证及购机发票，无法提供不回收）</ins></span><span-->
+<!--                                    class="gou"></span></div>-->
+<!--                        </li>-->
+<!--                        <li class="" onClick="item_click(this,'659','660')" name="mx_child_659">-->
+<!--                            <div class="pro_div"><span class="property_value"><i>完好无破损</i><ins>触摸屏完好，无破损失灵现象</ins></span><span-->
+<!--                                    class="gou"></span></div>-->
+<!--                        </li>-->
 
-                        <div class="clear"></div>
-                    </ul>
-                </dd>
+<!--                        <div class="clear"></div>-->
+<!--                    </ul>-->
+<!--                </dd>-->
             </dl>
+
+
             <div id="step3_nav" class="property_nav">
                 <div id="btn_step3_back" class="btn_back">< 返回上一步</div>
                 <div id="btn_step3_next" class="btn_next"

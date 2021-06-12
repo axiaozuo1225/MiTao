@@ -34,7 +34,7 @@ public class GoodsController {
     @RequestMapping("info")
     @ResponseBody
     public Goods goodsInfo (String goodsId){
-        System.out.println(goodsId);
+//        System.out.println(goodsId);
         return goodsService.showGoodsInfo(goodsId);
     }
 

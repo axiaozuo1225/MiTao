@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 瀹炰綋绫伙細
@@ -19,5 +20,8 @@ public class EvlBasic implements Serializable {
 
     private Integer basicInfoId;
     private String basicInfoName;
-    private String basicType;
+
+    private List<EvlDetail> evlDetailList;
+
+//    private String basicType;
 }

@@ -25,7 +25,7 @@ function	property_click(obj,suffix,property_id){
 	$(obj).attr('class','selected');
 	$("#property_"+suffix).val(property_id);
 	//自动下一步
-	auto_go_next(obj);
+	// auto_go_next(obj);
 }
 //描叙点击事件
 function	item_click(obj,suffix){
@@ -330,12 +330,12 @@ function show_goods_zhijian(src){
 
 /*新评估start*/
 function step1_next(){
-	var flag	=	true;
-	$("#property_step1 input").each(function(){if($(this).val()==0){flag=false;return false;}});
-	if(! flag){
-		alert('请选择评估参数');
-		return false;
-	}
+	// var flag	=	true;
+	// $("#property_step1 input").each(function(){if($(this).val()==0){flag=false;return false;}});
+	// if(! flag){
+	// 	alert('请选择评估参数');
+	// 	return false;
+	// }
 
 	$("#property_step2").show();
 	$("#property_step1").hide();

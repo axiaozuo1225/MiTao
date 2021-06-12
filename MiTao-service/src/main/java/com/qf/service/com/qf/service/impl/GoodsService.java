@@ -36,9 +36,10 @@ public class GoodsService implements IGoodsService {
         return pageInfo;
     }
 
+    @Override
     public Goods showGoodsInfo (String goodsId){
         Goods goods = goodsMapper.selectGoodsInfo(goodsId);
-        System.out.println(goods);
+//        System.out.println(goods);
         return goods;
     }
 }

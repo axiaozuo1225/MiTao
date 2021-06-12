@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace约定为接口的全限定名-->
+<mapper namespace="com.qf.mapper.EvlMapper">
+
+    <resultMap id="selectEvlTypeMap" type="evlType">
+        <id column="evl_type_id" property="evlTypeId"/>
+        <result column="evl_type_name" property="evlTypeName"/>
+        <collection property="evlBasicList" ofType="EvlBasic">
+            <id column="basic_info_id" property="basicInfoId"/>
+            <result column="basic_info_name" property="basicInfoName"/>
+            <collection property="evlDetailList" ofType="EvlDetail">
+                <id column="info_detail_id" property="infoDetailId"/>
+                <result column="info_detail_name" property="infoDetailName"/>
+                <result column="info_detail_desc" property="infoDetailDesc"/>
+            </collection>
+        </collection>
+
+    </resultMap>
+
+    <select id="selectEvlType" resultMap="selectEvlTypeMap">
+        select *
+        from tb_evl_type tet
+                 inner join tb_evl_basic teb on tet.evl_type_id = teb.basic_type
+                 inner join tb_evl_detail ted on teb.basic_info_id = ted.fk_basic_info_id
+                 inner join tb_evl_goods_detail tegd on ted.info_detail_id = tegd.fk_info_detail_id
+        where tegd.fk_good_id = #{goodsId}
+    </select>
+
+
+</mapper>
