@@ -9,4 +9,6 @@ public interface IGoodsService {
 
     PageInfo<Goods> showByPageAndWhere (String categoryId, String brandId, String curPage);
 
+    Goods showGoodsInfo (String goodsId);
+
 }

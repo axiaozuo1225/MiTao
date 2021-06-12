@@ -7,12 +7,11 @@
 <mapper namespace="com.qf.mapper.GoodsMapper">
 
     <select id="selectByPageAndWhere" resultType="goods">
-        select * from tb_category tc inner join tb_category_brand tcb on tc.category_id = tcb.fk_category_id
-        inner join tb_goods tg on tcb.fk_brand_id = tg.goods_brand_id
+        select * from tb_goods tg
 
         <where>
             <if test="categoryId != null">
-                 tc.category_id = #{categoryId}
+                 tg.goods_category_id = #{categoryId}
             </if>
             <if test="goodsBrandId != null">
                 and tg.goods_brand_id = #{goodsBrandId}

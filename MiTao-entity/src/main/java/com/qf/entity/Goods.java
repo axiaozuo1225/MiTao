@@ -28,4 +28,6 @@ public class Goods implements Serializable {
     private Integer goodsThirdPrice;
     private Integer goodsForthPrice;
     private Integer goodsFifthPrice;
+    private Integer goodsCategoryId;
+
 }

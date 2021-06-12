@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-@RequestMapping("goods")
+@RequestMapping("html/goods")
 public class GoodsController {
 
     @Autowired
@@ -25,9 +25,17 @@ public class GoodsController {
 
 //        System.out.println(categoryId);
 //        System.out.println(brandId);
+//        System.out.println(curPage);
         PageInfo<Goods> pageInfo = goodsService.showByPageAndWhere(categoryId, brandId, curPage);
-//        System.out.println(goods);
+//        System.out.println(pageInfo.getList());
         return pageInfo;
+    }
+
+    @RequestMapping("info")
+    @ResponseBody
+    public Goods goodsInfo (String goodsId){
+        System.out.println(goodsId);
+        return goodsService.showGoodsInfo(goodsId);
     }
 
 }

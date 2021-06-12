@@ -10,7 +10,7 @@
 
     <!--    配置试图解析器-->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-<!--        <property name="prefix" value="jsp"/>-->
+<!--        <property name="prefix" value="html"/>-->
 <!--        <property name="suffix" value=".jsp"/>-->
     </bean>
 
@@ -20,5 +20,6 @@
     <mvc:resources mapping="/css/**" location="/css/"/>
     <mvc:resources mapping="/images/**" location="/images/"/>
     <mvc:resources mapping="/html/**" location="/html/"/>
+    <mvc:resources mapping="/fonts/**" location="/fonts/"/>
 
 </beans>

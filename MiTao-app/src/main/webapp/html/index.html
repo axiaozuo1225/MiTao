@@ -1,6 +1,9 @@
 ﻿<!DOCTYPE>
 <html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>手机回收_二手手机,旧手机,废旧手机回收交易,价格评估_回购网_第1页</title>
     <meta name="keywords" content="手机回收,二手手机回收,旧手机回收,废旧手机回收,二手手机交易,二手手机价格,二手手机估价,手机回收价格"/>
@@ -9,10 +12,16 @@
     <meta name="chinaz-site-verification" content="081e7651-48c6-4c2f-a569-99321685eab1"/>
     <meta name="mobile-agent" content="format=html5;url=http://m.ihuigo.com/ershoushouji.html">
     <meta name="applicable-device" content="pc">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="../css/bootstrap.min.css" >
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
     <link rel="alternate" media="only screen and(max-width: 640px)" href="http://m.ihuigo.com/ershoushouji.html">
     <link href="../favicon.ico" type=image/x-icon rel="Icon">
     <link href="../css/new_css/global.css" rel="stylesheet" type="text/css">
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="../js/bootstrap.min.js"></script>
     <script src="../js/new_js/jquery-1.4.2.js" type="text/javascript"></script>
+<!--    <script src="../js/jquery-1.11.1.min.js" type="text/javascript"></script>-->
     <script src="../js/new_js/new_public.js" type="text/javascript"></script>
     <script type="text/javascript">
         function selectcity(url) {
@@ -129,9 +138,9 @@
 </div>
 <!--头部-->
 <script type="text/javascript" src="../js/goods.js"></script>
-<div class="new_search" style="padding-bottom:20px">
+<div class="new_search">
     <div class="search-box">
-        <div class="search-title">搜一下，看看你的二手闲置还值多少钱</div>
+        <div class="search-title" style="padding-top: 0px">搜一下，看看你的二手闲置还值多少钱</div>
         <div class="search">
             <div class="search-fenlei" id="search-fenlei">
                 <div class="set" id="all_type">手机</div>
@@ -158,10 +167,14 @@
 
 <script type="text/javascript">
 
+    var store = function (goodsId) {
+        localStorage.setItem("goodsId",goodsId);
+    }
 
-    var showGoods = function (brandId,categoryId,curPage) {
+    var showGoods = function (categoryId,brandId,curPage) {
 
-        console.log(categoryId)
+        // console.log(curPage)
+        // console.log(brandId)
 
         $.ajax({
             url:"goods/show",
@@ -170,12 +183,15 @@
             data: {"brandId":brandId,"categoryId":categoryId,"curPage":curPage},
             success: function (data) {
 
+                $("#count").text(data.total);
+
                 var goodsList = data.list;
+                // console.log(goodsList)
 
                 var content = "";
                 for (let i = 0; i < goodsList.length; i++) {
 
-                    content += "<dd><div class='pic_list_box'><div class='pic_list_img'><a href='info.html' title='"+goodsList[i].goodsName+"回收价格评估'><img src='"+goodsList[i].goodsImg+"' width='180' height='135' alt='"+goodsList[i].goodsName+"闲置回收价格评估'/></a></div><p class='name'>"+goodsList[i].goodsName+"</p><p class='pinggu'><a href='goods/info/21025.html' title='在线评估"+goodsList[i].goodsName+"回收价格'></a></p><div class='hot'><img src='../images/hot.png'/></div></div></dd> ";
+                    content += "<dd style='margin: 20px'><div><p class='text-info'>"+goodsList[i].goodsName+"</p><div class='pic_list_img'><a href='../html/info.html' title='"+goodsList[i].goodsName+"回收价格评估'><img class='img-thumbnail' src='../images/goods/"+goodsList[i].goodsImg+"' width='220' height='220' alt='"+goodsList[i].goodsName+"闲置回收价格评估' /></a></div><p class='pinggu'><a onclick='store("+goodsList[i].goodsId+")' href='../html/info.html' title='在线评估"+goodsList[i].goodsName+"回收价格'></a></p><div class='hot'><img src='../images/hot.png'/></div></div></dd> ";
 
                 }
                 $("#pic_list").html(content);
@@ -194,16 +210,18 @@
                 $("#ihuigo_page").html(content2);
             },
             dataType: "json"
-
-
-        })
-
+        });
     }
 
 
+    //更换加粗标题
+    var CTitle = function (data) {
+        // console.log(data)
+        localStorage.setItem("brandName",data.innerText);
+        $("#strong").text(data.innerText);
+    }
+
     var show = function (categoryId) {
-
-
 
         $.ajax({
             url: "category/show",
@@ -215,22 +233,21 @@
                 data = data[0];
                 var brandList = data.brandList;
 
+                localStorage.setItem("categoryName",data.categoryName);
+
                 $("#strong").text(data.categoryName);
 
                 var contant = "";
                 for (let i = 0; i < brandList.length; i++) {
-                    contant += "<a href='javascript:showGoods("+brandList[i].brandId+","+categoryId+")'>" + brandList[i].brandName + "</a><em>|</em>";
+                    contant += "<a onclick='CTitle(this)' href='javascript:showGoods("+categoryId+","+brandList[i].brandId+")'>" + brandList[i].brandName + "</a><em>|</em>";
                 }
                 $("#phoneBrand").html(contant);
-                showGoods(null ,categoryId);
+
+                showGoods(categoryId);
 
             },
             dataType: "json"
         });
-
-
-
-
     }
 
 
@@ -271,7 +288,7 @@
                 <dt>最近热门回收</dt>
                 <dd>
                     <div class="img2">
-                        <img src="http://img.ihuigo.com/goods_a/f6a645a58a6b36cb42e8ef1af0364101.jpg" width="42"
+                        <img src="" width="42"
                              height="31" title="ipad mini回收价格评估"/>
                     </div>
                     <div class="txt2">
@@ -299,10 +316,10 @@
                 </div>
                 <!--全部手机品牌-->
                 <div class="search_main">
-                    <div class="search_title"><h2 class="list-item">手机回收</h2>&nbsp;&nbsp;&nbsp;&nbsp;<em></em>搜索到
+                    <div class="search_title"><h1 class="list-item" style="font-weight: bolder">~MiTao高价回收~</h1>&nbsp;&nbsp;&nbsp;&nbsp;<em></em>搜索到
                         <em id="count"></em>个结果
                     </div>
-                    <dl class="pic_list" id="pic_list">
+                    <dl class="pic_list" style="border-style: none" id="pic_list">
 
 
 <!--                        <dd><div class='pic_list_box'><div class='pic_list_img'><a href='info.html' title='iphone 7回收价格评估'><img src="" width="180" height="135" alt='iphone 7闲置回收价格评估'/></a></div><p class='name'>iphone 7</p><p class='pinggu'><a href='goods/info/21025.html' title='在线评估iphone 7回收价格'></a></p><div class='hot'><img src='../images/hot.png'/></div></div></dd><div class="clear"></div>-->

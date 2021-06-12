@@ -21,12 +21,12 @@ public class GoodsService implements IGoodsService {
     public PageInfo<Goods> showByPageAndWhere(String categoryId, String brandId, String curPage) {
 
 
-        if(brandId.equals("null")){
-            brandId = null;
-        }
+//        System.out.println(brandId);
+//        System.out.println(brandId == null);
 
         PageHelper.startPage(Integer.parseInt(curPage),3);
         List<Goods> goods = goodsMapper.selectByPageAndWhere(categoryId,brandId);
+//        System.out.println(goods);
         PageInfo<Goods> pageInfo = new PageInfo<>(goods);
 
 //        System.out.println(pageInfo.getPageNum());
@@ -34,5 +34,11 @@ public class GoodsService implements IGoodsService {
 //        System.out.println(goods);
 
         return pageInfo;
+    }
+
+    public Goods showGoodsInfo (String goodsId){
+        Goods goods = goodsMapper.selectGoodsInfo(goodsId);
+        System.out.println(goods);
+        return goods;
     }
 }
