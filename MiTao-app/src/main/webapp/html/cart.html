@@ -1,6 +1,6 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE>
+<html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>订单提交-回购网 -  手机回收网 | 二手手机交易 | 笔记本回收 | 平板回收</title>
@@ -472,27 +472,82 @@
 
 
 
+    <script type="text/javascript">
+
+        // var goodsStr = localStorage.getItem("goods");
+        // var goods = JSON.parse(goodsStr);
+
+        var content = "<tr>\n" +
+            "                <td height='95' align='center'>\n" +
+            "                    <div class='contact_way_img'><img width='50' height='50' src='../images/goods/iphone7.png'></div>\n" +
+            "                    <div class='contact_way_txt'><p><span>iphone 7</span></p></div>\n" +
+            "                    <div class='clear'></div>\n" +
+            "                </td>\n" +
+            "                <td align='center' style='line-height:22px;'>\n" +
+            "                    <h3>￥2800.00</h3>\n" +
+            "                </td>\n" +
+            "                </td>\n" +
+            "                <td style='padding-left:28px; line-height: 18px;text-align: left;'>\n" +
+            "\t\t  \t\t\t\t\t\t\t\t<span>\n" +
+            "\t\t\t\t\t\t\t\t\t<a>大陆行货</a>\n" +
+            "\t\t\t\t\t\t\t\t\t|<a>保修一个月以上</a>\n" +
+            "\t\t\t\t\t\t\t\t</span>\n" +
+            "                    <br />\n" +
+            "\n" +
+            "                    <span>\n" +
+            "\t\t\t\t\t\t\t\t\t<a>红色</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>完好无破损</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>显示完好</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>通话功能正常</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>iCloud账号可以解除</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>全新机</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>开机正常</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>机身无进水受潮</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>按键接口及卡槽正常</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>无拆修</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>指纹功能正常</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>蓝牙/wifi功能正常</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>照相及感光功能正常</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>有换机</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>32G</a>\n" +
+            "\t\t\t\t\t\t\t\t\t |&nbsp;&nbsp;<a>机身无变形</a>\n" +
+            "\t\t\t\t\t\t\t\t</span>\n" +
+            "\n" +
+            "                </td>\n" +
+            "            </tr>";
+
+
+        $(function () {
+             $.ajax({
+                 url:
+             })
+        })
+
+
+
+
+    </script>
     <!--订单-->
     <div class="dingdan">
         <div class="contact_way">订单详情：</div>
         <table width="100%" border="0" cellpadding="0" cellspacing="1"  class="table1">
-            <tbody>
+            <tbody id='cartList'>
             <tr>
                 <th width="20%" height="35">型号</th>
                 <th width="16%">回购价格</th>
                 <th width="64%">评估描述情况</th>
             </tr>
             <tr>
-                <td height="95" align="center">
-                    <div class="contact_way_img"><img src="http://img.ihuigo.com/goods_a/739b3910f020832305a94a6a96eec952.jpg"></div>
-                    <div class="contact_way_txt"><p><span>iphone 7</span></p></div>
-                    <div class="clear"></div>
+                <td height='95' align='center'>
+                    <div class='contact_way_img'><img width='50' height='50' src='../images/goods/iphone7.png'></div>
+                    <div class='contact_way_txt'><p><span>iphone 7</span></p></div>
+                    <div class='clear'></div>
                 </td>
-                <td align="center" style="line-height:22px;">
+                <td align='center' style='line-height:22px;'>
                     <h3>￥2800.00</h3>
                 </td>
                 </td>
-                <td style="padding-left:28px; line-height: 18px;text-align: left;">
+                <td style='padding-left:28px; line-height: 18px;text-align: left;'>
 		  								<span>
 									<a>大陆行货</a>
 									|<a>保修一个月以上</a>
@@ -522,9 +577,11 @@
             </tr>
             </tbody>
         </table>
-        <div class="foot_bor"> <em>1</em>件产品总计回收价格<em style="font-size:18px;">￥2800</em> <!--<span>赠送环保券 <i>30</i>元--></span></div>
+        <div class='foot_bor'> <em>1</em>件产品总计回收价格<em style='font-size:18px;'>￥2800</em> <!--<span>赠送环保券 <i>30</i>元--></span></div>
     </div>
     <!--订单-->
+
+
     </div>
     <!--提交订单-->
 </form>

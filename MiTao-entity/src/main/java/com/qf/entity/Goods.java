@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 瀹炰綋绫伙細
@@ -29,5 +30,7 @@ public class Goods implements Serializable {
     private Integer goodsForthPrice;
     private Integer goodsFifthPrice;
     private Integer goodsCategoryId;
+
+    private List<EvlDetail> evlDetailList;
 
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -17,7 +18,9 @@ import java.io.Serializable;
 public class Cart implements Serializable {
 
     private Integer cartId;
-    private Integer fkCartUserId;
-    private Integer fkCartGoodId;
+//    private Integer fkCartUserId;
+//    private Integer fkCartGoodId;
     private Integer cartGoodPrice;
+
+    private List<Goods> goodsList;
 }
