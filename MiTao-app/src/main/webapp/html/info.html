@@ -48,23 +48,25 @@
                         for (let j = 0; j < basicInfos.length; j++) {
 
                             var basicInfo = basicInfos[j];
-                            content += "<dd><input type='hidden' name='property[]' id='property_version' value='0'/>\n" +
+                            content += "<dd><input type='hidden' name='property[]' id='property_"+basicInfo.basicInfoId+"' value=''/>\n" +
                                 "                    <div class='property_title'><h3>" + basicInfo.basicInfoName + "</h3></div><ul>";
 
                             var basicTils = basicInfo.evlDetailList;
                             for (let k = 0; k < basicTils.length; k++) {
 
                                 var basicTil = basicTils[k];
-                                content += "<li class='' onClick='property_click(this,\"version\",\"725\")' name='basicInfo" + j + "'><div class='pro_div'>\n" +
-                                    "                        <span class='property_value'><i>" + basicTil.infoDetailName + "</i><ins>" + basicTil.infoDetailDesc + "</ins></span><span class='gou'></span></div></li>\n";
+                                if(i == 1){
+                                    content += "<li class='' onClick='item_click(this,\""+basicInfo.basicInfoId+"\",\""+basicTil.infoDetailId+"\")' name='basicInfo" + basicInfo.basicInfoId + "'>"
+                                }else {
+                                    content += "<li class='' onClick='property_click(this,\""+basicInfo.basicInfoId+"\",\""+basicTil.infoDetailId+"\")' name='basicInfo" + basicInfo.basicInfoId + "'>";
+                                }
+
+                                content += "<div class='pro_div'><span class='property_value'><i>" + basicTil.infoDetailName + "</i><ins>" + basicTil.infoDetailDesc + "</ins></span><span class='gou'></span></div></li>\n";
                             }
                             content += "<div class='clear'></div></ul></dd>";
 
                         }
-
-                        content += "<div id='step1_nav' class='property_nav' ><div id='btn_step1_next' class='btn_next' onclick='step1_next()'>下一步</div></div>";
-                        $("#step" + i).html(content);
-
+                        $("#step" + (i + 1)).html(content);
                     }
 
 
@@ -85,6 +87,7 @@
                 contentType: "application/json",
                 success: function (data) {
 
+                    localStorage.setItem("goods",JSON.stringify(data));
 
                     $("#title").append("&gt;" + data.goodsName);
 
@@ -252,7 +255,7 @@
 <div id="ahs_trade_body">
     <input type="hidden" id="view" value="goods_info"/>
     <input type="hidden" id="if_show_price" value="1"/>
-    <input type="hidden" id="gid" name="gid" value="21025"/>
+    <input type="hidden" id="gid" name="gid" value="1"/>
     <input type="hidden" id="package_id" name="package_id" value="571"/>
     <div id="ahs_property_head">
         <p>开始评估你的手机，只需3步，获得产品精准评估报价</p>
@@ -269,7 +272,7 @@
     <div id="ahs_property_body">
         <!--第一步-->
         <div id="property_step1">
-            <dl id="step0">
+            <dl id="step1">
 
                 <!--                <dd><input type='hidden' name='property[]' id='property_version' value='0'/>-->
                 <!--                    <div class='property_title'><h3>版本</h3></div>-->
@@ -280,72 +283,64 @@
                 <!--                        <div class='clear'></div>-->
                 <!--                    </ul>-->
                 <!--                    -->
-<!--                </dd>-->
-<!--                <div id='step1_nav' class='property_nav'>-->
-<!--                    <div id='btn_step1_next' class='btn_next'>下一步</div>-->
-<!--                </div>-->
-
+                <!--                </dd>-->
             </dl>
+            <div id='step1_nav' class='property_nav'>
+                <div id='btn_step1_next' class='btn_next'>下一步</div>
+            </div>
         </div>
         <!--第一步-->
         <!--第二步-->
         <div id="property_step2" class="hide">
-            <dl id="step1">
-<!--                <dd><div class='property_title'><h3>功能情况（可多选或不选）</h3></div><ul>-->
+            <dl id="step2">
+                <!--                <dd><div class='property_title'><h3>功能情况（可多选或不选）</h3></div><ul>-->
 
-<!--&lt;!&ndash;                        <input type="hidden" name="desc_pid[]" value="944"/>&ndash;&gt;-->
-<!--                        <input type='hidden' name='desc_id[]' id='desc_id_944' value='945'/>-->
-<!--                        <li onClick='item_click(this,"944","946","945")' name='mx_child_944'>-->
-<!--                            <div class='pro_div'><span class='property_value'><i>有换机</i><ins>系统型号N开头（针对在保机器，2次以上按保修过保处理，含2次）</ins></span>-->
-<!--                                <span class='gou'></span></div>-->
-<!--                        </li>-->
-<!--                        <li onClick="item_click(this,'944','946','945')" name="mx_child_944">-->
-<!--                            <div class="pro_div"><span class="property_value"><i>机身进水或受潮</i><ins>机身防水标发红/机身受潮/机板发霉</ins></span>-->
-<!--                                <span class="gou"></span></div>-->
-<!--                        </li>-->
-<!--                        <li onClick="item_click(this,'944','946','945')" name="mx_child_944">-->
-<!--                            <div class="pro_div"><span class="property_value"><i>蓝牙/wifi功能不正常</i><ins>蓝牙/wifi功能不正常</ins></span>-->
-<!--                                <span class="gou"></span></div>-->
-<!--                        </li>-->
-<!--                        <div class="clear"></div>-->
-<!--                    </ul>-->
-<!--                </dd>-->
+                <!--&lt;!&ndash;                        <input type="hidden" name="desc_pid[]" value="944"/>&ndash;&gt;-->
+                <!--                        <input type='hidden' name='desc_id[]' id='desc_id_944' value='945'/>-->
+                <!--                        <li onClick='item_click(this,"944","946","945")' name='mx_child_944'>-->
+                <!--                            <div class='pro_div'><span class='property_value'><i>有换机</i><ins>系统型号N开头（针对在保机器，2次以上按保修过保处理，含2次）</ins></span>-->
+                <!--                                <span class='gou'></span></div>-->
+                <!--                        </li>-->
+                <!--                        <li onClick="item_click(this,'944','946','945')" name="mx_child_944">-->
+                <!--                            <div class="pro_div"><span class="property_value"><i>机身进水或受潮</i><ins>机身防水标发红/机身受潮/机板发霉</ins></span>-->
+                <!--                                <span class="gou"></span></div>-->
+                <!--                        </li>-->
+                <!--                        <li onClick="item_click(this,'944','946','945')" name="mx_child_944">-->
+                <!--                            <div class="pro_div"><span class="property_value"><i>蓝牙/wifi功能不正常</i><ins>蓝牙/wifi功能不正常</ins></span>-->
+                <!--                                <span class="gou"></span></div>-->
+                <!--                        </li>-->
+                <!--                        <div class="clear"></div>-->
+                <!--                    </ul>-->
+                <!--                </dd>-->
             </dl>
-            <div id="step2_nav" class="property_nav">
-                <div id="btn_step2_back" class="btn_back">< 返回上一步</div>
-                <div id="btn_step2_next" class="btn_next">都没问题，跳过 ></div>
-            </div>
+            <div id="step2_nav" class="property_nav"><div id="btn_step2_back" class="btn_back">< 返回上一步</div><div id="btn_step2_next" class="btn_next">下一步 ></div></div>
+
         </div>
         <!--第二步-->
         <!--第三步-->
         <div id="property_step3" class="hide">
-            <dl id="step2">
-<!--                <dd class="" id="pingu_mx_659">-->
-<!--                    <input type="hidden" name="desc_pid[]" value="659"/>-->
-<!--                    <input type="hidden" name="desc_id[]" id="desc_id_659" value="0"/>-->
-<!--                    <div class="property_title"><h3>外观情况</h3></div>-->
-<!--                    <ul>-->
-<!--                        <li class="" onClick="item_click(this,'659','660')" name="mx_child_659">-->
-<!--                            <div class="pro_div"><span class="property_value"><i>全新机</i><ins>原封未拆/未使用（需提供身份证及购机发票，无法提供不回收）</ins></span><span-->
-<!--                                    class="gou"></span></div>-->
-<!--                        </li>-->
-<!--                        <li class="" onClick="item_click(this,'659','660')" name="mx_child_659">-->
-<!--                            <div class="pro_div"><span class="property_value"><i>完好无破损</i><ins>触摸屏完好，无破损失灵现象</ins></span><span-->
-<!--                                    class="gou"></span></div>-->
-<!--                        </li>-->
+            <dl id="step3">
+                <!--                <dd class="" id="pingu_mx_659">-->
+                <!--                    <input type="hidden" name="desc_pid[]" value="659"/>-->
+                <!--                    <input type="hidden" name="desc_id[]" id="desc_id_659" value="0"/>-->
+                <!--                    <div class="property_title"><h3>外观情况</h3></div>-->
+                <!--                    <ul>-->
+                <!--                        <li class="" onClick="item_click(this,'659','660')" name="mx_child_659">-->
+                <!--                            <div class="pro_div"><span class="property_value"><i>全新机</i><ins>原封未拆/未使用（需提供身份证及购机发票，无法提供不回收）</ins></span><span-->
+                <!--                                    class="gou"></span></div>-->
+                <!--                        </li>-->
+                <!--                        <li class="" onClick="item_click(this,'659','660')" name="mx_child_659">-->
+                <!--                            <div class="pro_div"><span class="property_value"><i>完好无破损</i><ins>触摸屏完好，无破损失灵现象</ins></span><span-->
+                <!--                                    class="gou"></span></div>-->
+                <!--                        </li>-->
 
-<!--                        <div class="clear"></div>-->
-<!--                    </ul>-->
-<!--                </dd>-->
+                <!--                        <div class="clear"></div>-->
+                <!--                    </ul>-->
+                <!--                </dd>-->
             </dl>
 
+            <div id='step3_nav' class='property_nav'><div id='btn_step3_back' class='btn_back'>< 返回上一步</div><div id='btn_step3_next' class='btn_next' onclick='new_show_price("price.html","show_price")'>查看价格 ></div></div>
 
-            <div id="step3_nav" class="property_nav">
-                <div id="btn_step3_back" class="btn_back">< 返回上一步</div>
-                <div id="btn_step3_next" class="btn_next"
-                     onclick="new_show_price('ajax/new_get_pg_price.html','show_price')">查看价格 >
-                </div>
-            </div>
         </div>
         <!--第三步-->
     </div>
@@ -365,13 +360,13 @@
         $("input[name='property[]']").each(function () {
             $(this).val(0);
         })
-        $("#property_step1 input[name='desc_id[]']").each(function () {
-            $(this).val(0);
-        })
-        $("#property_step3 input[name='desc_id[]']").each(function () {
-            $(this).val(0);
-        })
-        $("#pj_ids").val(0);
+        // $("#property_step1 input[name='desc_id[]']").each(function () {
+        //     $(this).val(0);
+        // })
+        // $("#property_step3 input[name='desc_id[]']").each(function () {
+        //     $(this).val(0);
+        // })
+        // $("#pj_ids").val(0);
     })
 </script>
 <!--[if lte IE 6]>
