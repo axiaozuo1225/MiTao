@@ -13,8 +13,9 @@ public class CartService implements ICartService {
     private CartMapper cartMapper;
 
     @Override
-    public Cart showCart(String UserId){
-        cartMapper
+    public Cart showCart(String userId){
+        Cart cart = cartMapper.selectCart(userId);
+        return cart;
     }
 
 }

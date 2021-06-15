@@ -1,9 +1,11 @@
 package com.qf.controller;
 
+import com.qf.entity.EvlDetail;
 import com.qf.entity.EvlType;
 import com.qf.service.com.qf.service.IEvlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,5 +26,12 @@ public class EvlController {
 
         return evlService.showEvlType(goodsId);
 
+    }
+
+    @RequestMapping("showDetail")
+    @ResponseBody
+    public List<EvlDetail> showEvlDetail (@RequestBody String[] infoDetailIds){
+        System.out.println(infoDetailIds);
+        return evlService.showDetail(infoDetailIds);
     }
 }

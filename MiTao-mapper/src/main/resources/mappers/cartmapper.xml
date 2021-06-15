@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace约定为接口的全限定名-->
+<mapper namespace="com.qf.mapper.CartMapper">
+    <select id="selectCart" resultType="Cart">
+        select *
+        from tb_cart tc
+                 inner join tb_cart_detail tcd on tc.cart_id = tcd.fk_cart_id
+                 inner join tb_evl_detail ted on tcd.fk_info_detail_id = ted.info_detail_id
+        where tc.cart_id = 3;
+    </select>
+
+</mapper>

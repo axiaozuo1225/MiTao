@@ -22,7 +22,7 @@ function property_click(obj, suffix, value) {
     var name = $(obj).attr('name');
     $("li[name='" + name + "']").attr('class', '');
     $(obj).attr('class', 'selected');
-    $("#property_" + suffix).val(value);
+    $("#property_" + suffix).val(","+value);
     //自动下一步
     // auto_go_next(obj);
 }
@@ -149,6 +149,19 @@ function new_show_price(url, act, func, elem_id, ifhuanxin) {
     // if ($("#if_show_price").val() == 0) return false;
     // $("#if_show_price").val(0);		//加锁
     if (act == 'show_price') {		//查看价格
+        var info = [];
+        $("input[name='property[]']").each(function () {
+            var values = $(this).val().split(",");
+            for (let i = 0; i < values.length; i++) {
+                if(i >= 1){
+                    info.push(values[i]);
+                }
+            }
+        })
+
+        localStorage.setItem("info",JSON.stringify(info));
+        // console.log(info)
+
         var view = $("#view").val();	//视图文件
         if (view == 'goods_info') $("#loading_div").css('display', 'block');
         // $.post(url, {
