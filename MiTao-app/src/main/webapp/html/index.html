@@ -13,7 +13,7 @@
     <meta name="mobile-agent" content="format=html5;url=http://m.ihuigo.com/ershoushouji.html">
     <meta name="applicable-device" content="pc">
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="../css/bootstrap.min.css" >
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
     <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
     <link rel="alternate" media="only screen and(max-width: 640px)" href="http://m.ihuigo.com/ershoushouji.html">
     <link href="../favicon.ico" type=image/x-icon rel="Icon">
@@ -21,7 +21,7 @@
     <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/new_js/jquery-1.4.2.js" type="text/javascript"></script>
-<!--    <script src="../js/jquery-1.11.1.min.js" type="text/javascript"></script>-->
+    <!--    <script src="../js/jquery-1.11.1.min.js" type="text/javascript"></script>-->
     <script src="../js/new_js/new_public.js" type="text/javascript"></script>
     <script type="text/javascript">
         function selectcity(url) {
@@ -72,8 +72,6 @@
         </div>
         <div class="shortcut-right">
             <ul id='login_show'>
-                <li><a href="members/login.html" rel="nofollow">登录</a></li>
-                <li><a href="members/register.html" rel="nofollow">注册</a></li>
 
 
                 <li class="item-daohang"><a class="item-daohang-nav" href="service/map.html" rel="nofollow"
@@ -168,19 +166,19 @@
 <script type="text/javascript">
 
     var store = function (goodsId) {
-        localStorage.setItem("goodsId",goodsId);
+        localStorage.setItem("goodsId", goodsId);
     }
 
-    var showGoods = function (categoryId,brandId,curPage) {
+    var showGoods = function (categoryId, brandId, curPage) {
 
         // console.log(curPage)
         // console.log(brandId)
 
         $.ajax({
-            url:"goods/show",
-            type:"GET",
+            url: "goods/show",
+            type: "GET",
             contentType: "application/json",
-            data: {"brandId":brandId,"categoryId":categoryId,"curPage":curPage},
+            data: {"brandId": brandId, "categoryId": categoryId, "curPage": curPage},
             success: function (data) {
 
                 $("#count").text(data.total);
@@ -191,7 +189,7 @@
                 var content = "";
                 for (let i = 0; i < goodsList.length; i++) {
 
-                    content += "<dd style='margin: 20px'><div><p class='text-info'>"+goodsList[i].goodsName+"</p><div class='pic_list_img'><a href='../html/info.html' title='"+goodsList[i].goodsName+"回收价格评估'><img class='img-thumbnail' src='../images/goods/"+goodsList[i].goodsImg+"' width='220' height='220' alt='"+goodsList[i].goodsName+"闲置回收价格评估' /></a></div><p class='pinggu'><a onclick='store("+goodsList[i].goodsId+")' href='../html/info.html' title='在线评估"+goodsList[i].goodsName+"回收价格'></a></p><div class='hot'><img src='../images/hot.png'/></div></div></dd> ";
+                    content += "<dd style='margin: 20px'><div><p class='text-info'>" + goodsList[i].goodsName + "</p><div class='pic_list_img'><a href='../html/info.html' title='" + goodsList[i].goodsName + "回收价格评估'><img class='img-thumbnail' src='../images/goods/" + goodsList[i].goodsImg + "' width='220' height='220' alt='" + goodsList[i].goodsName + "闲置回收价格评估' /></a></div><p class='pinggu'><a onclick='store(" + goodsList[i].goodsId + ")' href='../html/info.html' title='在线评估" + goodsList[i].goodsName + "回收价格'></a></p><div class='hot'><img src='../images/hot.png'/></div></div></dd> ";
 
                 }
                 $("#pic_list").html(content);
@@ -201,11 +199,11 @@
 
                 var pages = data.pages;
                 for (let i = 0; i < pages; i++) {
-                    content2 += "<span><a href='javascript:showGoods("+categoryId+","+brandId+","+(i+1)+")'>"+(i+1)+"</a></span>"
+                    content2 += "<span><a href='javascript:showGoods(" + categoryId + "," + brandId + "," + (i + 1) + ")'>" + (i + 1) + "</a></span>"
                 }
 
-                content2 += " <span class='next_link'><a href='javascript:showGoods("+categoryId+","+brandId+","+data.nextPage+")'>下一页</a></span>";
-                content2 += "<span class='last_link'><a href='javascript:showGoods("+categoryId+","+brandId+","+pages+")'>尾页</a></span>"
+                content2 += " <span class='next_link'><a href='javascript:showGoods(" + categoryId + "," + brandId + "," + data.nextPage + ")'>下一页</a></span>";
+                content2 += "<span class='last_link'><a href='javascript:showGoods(" + categoryId + "," + brandId + "," + pages + ")'>尾页</a></span>"
 
                 $("#ihuigo_page").html(content2);
             },
@@ -217,7 +215,7 @@
     //更换加粗标题
     var CTitle = function (data) {
         // console.log(data)
-        localStorage.setItem("brandName",data.innerText);
+        localStorage.setItem("brandName", data.innerText);
         $("#strong").text(data.innerText);
     }
 
@@ -227,19 +225,19 @@
             url: "category/show",
             type: "GET",
             contentType: "application/json",
-            data: {"categoryId":categoryId},
+            data: {"categoryId": categoryId},
 
             success: function (data) {
                 data = data[0];
                 var brandList = data.brandList;
 
-                localStorage.setItem("categoryName",data.categoryName);
+                localStorage.setItem("categoryName", data.categoryName);
 
                 $("#strong").text(data.categoryName);
 
                 var contant = "";
                 for (let i = 0; i < brandList.length; i++) {
-                    contant += "<a onclick='CTitle(this)' href='javascript:showGoods("+categoryId+","+brandList[i].brandId+")'>" + brandList[i].brandName + "</a><em>|</em>";
+                    contant += "<a onclick='CTitle(this)' href='javascript:showGoods(" + categoryId + "," + brandList[i].brandId + ")'>" + brandList[i].brandName + "</a><em>|</em>";
                 }
                 $("#phoneBrand").html(contant);
 
@@ -250,17 +248,29 @@
         });
     }
 
+    var logout = function () {
+        sessionStorage.clear();
+        location.replace("index.html")
+    }
 
     $(function () {
+
+        var user = sessionStorage.getItem("user");
+        // console.log(user == null)
+        // console.log(user == "null")
+        if (user != null && user != "") {
+            $("#login_show").prepend("<li><a href='member.html' rel='nofollow'>个人中心</a></li><li><a href='javascript:logout()' rel='nofollow'>退出登录</a></li>")
+        } else {
+            $("#login_show").prepend("<li><a href='login.html' rel='nofollow'>登录</a></li><li><a href='register.html' rel='nofollow'>注册</a></li>")
+        }
 
         $.ajax({
             url: "category/show",
             type: "GET",
             success: function (data) {
-
                 var content = "";
                 for (let i = 0; i < data.length; i++) {
-                    content += "<dd class='item'><a href='javascript:show("+data[i].categoryId+")' title='"+data[i].categoryTitle+"'><b class='item"+(i+1)+"'>&nbsp;</b><em>"+data[i].categoryName+"</em><span>&nbsp;</span></a></dd><div class='clear'></div>";
+                    content += "<dd class='item'><a href='javascript:show(" + data[i].categoryId + ")' title='" + data[i].categoryTitle + "'><b class='item" + (i + 1) + "'>&nbsp;</b><em>" + data[i].categoryName + "</em><span>&nbsp;</span></a></dd><div class='clear'></div>";
                 }
                 $("#cateList").append(content);
                 show(1);
@@ -282,13 +292,12 @@
                 <dt>搜索结果分类</dt>
 
 
-
             </dl>
             <dl class="side_hot">
                 <dt>最近热门回收</dt>
                 <dd>
                     <div class="img2">
-                        <img src="" width="42"
+                        <img src="../images/goods/55_55_1507694408880mp.jpg" width="42"
                              height="31" title="ipad mini回收价格评估"/>
                     </div>
                     <div class="txt2">
@@ -322,17 +331,17 @@
                     <dl class="pic_list" style="border-style: none" id="pic_list">
 
 
-<!--                        <dd><div class='pic_list_box'><div class='pic_list_img'><a href='info.html' title='iphone 7回收价格评估'><img src="" width="180" height="135" alt='iphone 7闲置回收价格评估'/></a></div><p class='name'>iphone 7</p><p class='pinggu'><a href='goods/info/21025.html' title='在线评估iphone 7回收价格'></a></p><div class='hot'><img src='../images/hot.png'/></div></div></dd><div class="clear"></div>-->
+                        <!--                        <dd><div class='pic_list_box'><div class='pic_list_img'><a href='info.html' title='iphone 7回收价格评估'><img src="" width="180" height="135" alt='iphone 7闲置回收价格评估'/></a></div><p class='name'>iphone 7</p><p class='pinggu'><a href='goods/info/21025.html' title='在线评估iphone 7回收价格'></a></p><div class='hot'><img src='../images/hot.png'/></div></div></dd><div class="clear"></div>-->
                     </dl>
                     <div class="clear"></div>
 
                     <div class="pageStr">
                         <div class="ihuigo_page" id="ihuigo_page">
-<!--                            <span class="cur_link">1</span>-->
-<!--                            <span><a href=''>2</a></span>-->
+                            <!--                            <span class="cur_link">1</span>-->
+                            <!--                            <span><a href=''>2</a></span>-->
 
-<!--                            <span class='next_link'><a href=''>下一页</a></span>-->
-<!--                            <span class='last_link'><a href=''>尾页</a></span>-->
+                            <!--                            <span class='next_link'><a href=''>下一页</a></span>-->
+                            <!--                            <span class='last_link'><a href=''>尾页</a></span>-->
                         </div>
                     </div>
                 </div>

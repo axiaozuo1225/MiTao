@@ -18,6 +18,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.qf</groupId>
             <artifactId>MiTao-mapper</artifactId>
             <version>1.0-SNAPSHOT</version>

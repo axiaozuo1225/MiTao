@@ -5,6 +5,6 @@ import org.apache.ibatis.annotations.Select;
 
 public interface UserMapper {
 
-    @Select("select * from tb_user where user_name = #{username} and user_password = #{password}")
+    @Select("select * from tb_user where user_name = #{userName} and user_password = #{userPassword}")
     User checkUser(User user);
 }

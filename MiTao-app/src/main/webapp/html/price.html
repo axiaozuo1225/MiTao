@@ -30,7 +30,12 @@
         var goods = JSON.parse(localStorage.getItem("goods"));
 
         var showCart = function () {
-            location.href = "cart.html";
+            if(sessionStorage.getItem("user") == null){
+                alert("您未登录,请先登录");
+                location.href = "login.html";
+            }else {
+                location.href = "cart.html";
+            }
         }
 
         $(function () {
