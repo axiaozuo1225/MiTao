@@ -20,4 +20,6 @@ public class EvlDetail implements Serializable {
     private Integer infoDetailId;
     private String infoDetailName;
     private String infoDetailDesc;
+    //扣钱数
+    private String goodDiscount;
 }

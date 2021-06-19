@@ -68,8 +68,6 @@
                         }
                         $("#step" + (i + 1)).html(content);
                     }
-
-
                 },
                 dataType: "json"
             })
@@ -92,7 +90,7 @@
                     $("#title").append("&gt;" + data.goodsName);
 
                     var content = "<div class='heat_img'><img src='../images/goods/" + data.goodsImg + "' alt='" + data.goodsName + "回收价格评估' width='220' height='220'/></div>\n" +
-                        "            <div class='heat_txt'><div class='heat_name'><span>" + data.goodsName + "</span></div><dl class='heat_ts'><dd><em>" + data.goodsMinPrice + "</em>元<br/>30天内回收最高价</dd><dt class='clear'></dt></dl>";
+                        "            <div class='heat_txt'><div class='heat_name'><span>" + data.goodsName + "</span></div><dl class='heat_ts'><dd><em>" + data.goodsCost + "</em>元<br/>30天内回收最高价</dd><dt class='clear'></dt></dl>";
 
                     content += "<div class='heat_bao'><img src='../images/new_images/icon10.gif' alt='回收免费享受第三方理赔服务'/>可免费享受第三方理赔服务</div>\n" +
                         "                <div class='clear'></div></div><div class='clear'></div>";

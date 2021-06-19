@@ -15,9 +15,12 @@ public class UserService implements IUserService {
 
     @Override
     public User checkUser(User user) {
-        String userPassword = user.getUserPassword();
-
-        user.setUserPassword(SecureUtil.md5(userPassword));
+        user.setUserPassword(SecureUtil.md5( user.getUserPassword()));
         return userMapper.checkUser(user);
+    }
+
+    @Override
+    public User findUserById(String userId){
+        return userMapper.selectUser(userId);
     }
 }

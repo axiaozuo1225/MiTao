@@ -29,12 +29,9 @@ public class EvlService implements IEvlService {
     }
 
     @Override
-    public List<EvlDetail> showDetail(String[] infoDetailIds){
-        List<EvlDetail> evlDetails = new ArrayList<>();
-        for (String infoDetailId : infoDetailIds) {
+    public List<EvlDetail> showDetail(String goodsId,String[] infoDetailIds){
 
-            evlDetails.add(evlMapper.selectEvlDetail(infoDetailId));
-        }
-        return evlDetails;
+           return evlMapper.selectEvlDetail(goodsId,infoDetailIds);
+
     }
 }

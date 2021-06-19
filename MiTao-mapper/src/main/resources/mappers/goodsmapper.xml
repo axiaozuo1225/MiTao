@@ -11,12 +11,35 @@
 
         <where>
             <if test="categoryId != null">
-                 tg.goods_category_id = #{categoryId}
+                tg.goods_category_id = #{categoryId}
             </if>
             <if test="goodsBrandId != null">
                 and tg.goods_brand_id = #{goodsBrandId}
             </if>
         </where>
+    </select>
+
+
+    <insert id="insertComments">
+        insert into tb_comments (com_user_id, com_goods_id, com_content, com_time)
+        values (#{comUserId}, #{comGoodsId}, #{comContent}, #{comTime})
+    </insert>
+
+    <resultMap id="CommentsMap" type="Comments">
+        <id column="com_id" property="comId"/>
+        <result column="com_content" property="comContent"/>
+        <result column="com_time" property="comTime"/>
+        <association property="comUser" javaType="User">
+            <id column="user_id" property="userId"/>
+            <result column="user_phone" property="userPhone"/>
+            <result column="user_img" property="userImg"/>
+        </association>
+    </resultMap>
+    <select id="selectComments" resultMap="CommentsMap">
+        select *
+        from tb_comments tc
+                 inner join tb_user tu on tc.com_user_id = tu.user_id
+        where com_goods_id = #{comGoodsId}
     </select>
 
 

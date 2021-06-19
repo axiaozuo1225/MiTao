@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace约定为接口的全限定名-->
+<mapper namespace="com.qf.mapper.AddressMapper">
+
+    <insert id="insertAddress" parameterType="Address" useGeneratedKeys="true" keyColumn="adr_id" keyProperty="adrId">
+        insert into tb_address (adr_name, adr_phone, adr_province, adr_city, adr_zone, adr_detail, adr_user_id,
+                                default_status)
+        values (#{adrName}, #{adrPhone}, #{adrProvince}, #{adrCity}, #{adrZone}, #{adrDetail}, #{adrUserId},
+                #{defaultStatus});
+    </insert>
+
+
+</mapper>

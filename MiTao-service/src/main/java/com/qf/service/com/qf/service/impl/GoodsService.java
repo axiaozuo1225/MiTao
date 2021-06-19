@@ -3,13 +3,16 @@ package com.qf.service.com.qf.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.qf.entity.Comments;
 import com.qf.entity.Goods;
+import com.qf.entity.User;
 import com.qf.mapper.GoodsMapper;
 import com.qf.service.com.qf.service.IGoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @Service
 public class GoodsService implements IGoodsService {
@@ -42,4 +45,23 @@ public class GoodsService implements IGoodsService {
 //        System.out.println(goods);
         return goods;
     }
+
+    @Override
+    public int addComments(Comments comments) {
+        return goodsMapper.insertComments(comments);
+    }
+
+    @Override
+    public List<Comments> showComments(String goodsId) {
+        List<Comments> comments = goodsMapper.selectComments(goodsId);
+
+        comments.forEach(comments1 -> {
+            User comUser = comments1.getComUser();
+            comUser.setUserPhone(comUser.getUserPhone().substring(0,3) + "****" +comUser.getUserPhone().substring(7));
+        });
+
+        return comments;
+    }
+
+
 }

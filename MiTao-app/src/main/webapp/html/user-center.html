@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<!-- saved from url=(0041)https://www.huishoubao.com/Account/Coupon -->
+<html lang="zh-cn" class=" fullscreen flexbox is-win">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-transform ">
+    <meta property="qc:admins" content="2750414631605130752176375">
+    <title>我的现金券</title>
+    <meta name="keywords" content="手机回收,笔记本回收,平板电脑回收,二手手机回收,旧手机回收,电脑回收,专业高价回收">
+    <meta name="description"
+          content="回收宝-专业的电子产品回收平台，为你提供手机回收、平板电脑回收、笔记本回收等二手数码产品回收业务。快速估计、专业检测、到账及时，专业的团队提供高价回收服务，并有数据粉碎，隐私安全有保障。">
+    <link href="../css/user-center.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css"/>
+    <link rel="stylesheet" href="../css/animate.min.css">
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/jquery.hDialog.js"></script>
+
+    <script type="text/javascript">
+
+
+        // 查看商品详情
+        var showDetail = function (orderId) {
+
+            $.ajax({
+                url: "order/showOrderDetail",
+                type: "post",
+                data: JSON.stringify(orderId),
+                contentType: "application/json",
+                success: function (result) {
+                    var content = "<tr><td>商品名称</td><td>回购价</td><td>订单状态</td><td>联系电话</td><td>下单时间</td><td>支付方式</td><td>回购商品详情描述</td></tr>"
+
+                    content += "<tr><td>" + result.boGoodsName + "</td><td>" + result.boPrice + "</td><td>" + (result.boStatus == 0 ? "未完成" : "已完成") + "</td><td>" + result.address.adrPhone + "</td><td>" + new Date(result.boCreatetime).toLocaleString() + "</td><td>" + (result.boAccountId == 1 ? "支付宝" : "微信") + "</td><td>";
+
+                    var evlDetailList = result.evlDetailList;
+                    for (let i = 0; i < evlDetailList.length; i++) {
+                        content += evlDetailList[i].infoDetailName + "&nbsp;|"
+                    }
+                    content += "</td></tr>";
+                    console.log(content)
+                    $("#detail").html(content);
+                },
+                dataType: "json"
+            })
+        }
+
+        //评论功能
+        var comments = function (goodsId) {
+            $("#goodsId").val(goodsId);
+        }
+        //提交评论
+        var submitComments = function () {
+
+            if (!$("#content").val()) {
+                alert("您还未填写评论~");
+                return;
+            }
+
+            var user = JSON.parse(sessionStorage.getItem("user"));
+            var comments = {
+                "comUserId": user.userId,
+                "comGoodsId": $("#goodsId").val(),
+                "comContent": $("#content").val(),
+                "comTime": new Date()
+            }
+
+            $.ajax({
+                url: "goods/addComments",
+                contentType: "application/json",
+                type: "json",
+                data: JSON.stringify(comments),
+                success: function (result) {
+                    alert(result.msg)
+                    if (result.flag) {
+                        $("#content").val("");
+                        $(".pinjia").hDialog('close',{box:'#pinlun'});
+                    }
+                },
+                dataType: "json"
+            })
+
+        }
+
+        var showMore = function (name) {
+            $(".link").removeClass('is-active');
+            $("a[name='" + name + "']").addClass('is-active');
+
+            $(".main-inner").hide();
+            $("#" + name).show();
+
+            var user = JSON.parse(sessionStorage.getItem("user"));
+
+            if (name == "manage") {
+
+                $.ajax({
+                    url: "user/findUser",
+                    type: "post",
+                    contentType: "application/json",
+                    data: JSON.stringify(user.userId),
+                    success: function (result) {
+                        $("#phone").text(result.userPhone);
+                    },
+                    dataType: "json"
+                })
+
+            } else if (name == "order") {
+                $.ajax({
+                    url: "order/showOrder",
+                    type: "post",
+                    data: JSON.stringify(user.userId),
+                    contentType: "application/json",
+                    success: function (result) {
+                        var content = "<tr><th width='20%' height='35'>型号</th><th width='16%'>回购价格</th><th width='44%'>订单生成时间</th><th width='20%' height='35'>操作</th></tr>\n";
+                        for (let i = 0; i < result.length; i++) {
+                            var order = result[i];
+                            // <img width='50' height='50' src='../images/goods/" + goods.goodsImg + "'>
+                            content += "<tr><td align='center' style='line-height:33px;'><h3>" + order.boGoodsName + "</h3></td><td align='center' style='line-height:33px;'><h3>" + order.boPrice + "</h3></td><td style='padding-left:28px; line-height: 33px;text-align: center;'>";
+                            content += "<a>" + new Date(order.boCreatetime).toLocaleString() + "</a></td><td align='center' style='line-height:33px;'><a href='javascript:comments(" + order.boGoodsId + ")' class='bounceInLeft dialog pinjia'>评价</a><em>|</em><a href='javascript:showDetail(" + order.boId + ")' class='bounceInLeft dialog xiangxi'> 查看详情</a></td></tr>";
+                        }
+                        $("#cartList").html(content);
+
+                        pinlunWindow();
+                    },
+                    dataType: "json"
+                });
+            }
+        }
+
+        var pinlunWindow = function () {
+            $(".pinjia").hDialog({
+                box: '#pinlun',
+                boxBg: '#eeeeee',
+                modalBg: '#eeeeee',
+                closeBg: 'rgba(0,0,0,0.6)',
+                width: 600,
+                height: 300,
+                positions: 'center',
+                triggerEvent: 'click',
+                effect: 'hide',
+                closeHide: true,
+                resetForm: false,
+                modalHide: false,
+                escHide: false,
+                //beforeShow: function(){ alert('执行回调'); },
+                // afterHide: function(){ alert('执行回调'); }
+            });
+
+            $(".xiangxi").hDialog({
+                box: '#xiangqing',
+                boxBg: '#eeeeee',
+                modalBg: '#eeeeee',
+                closeBg: 'rgba(0,0,0,0.6)',
+                width: 1100,
+                height: 100,
+                positions: 'top',
+                triggerEvent: 'click',
+                effect: 'hide',
+                closeHide: true,
+                resetForm: false,
+                modalHide: false,
+                escHide: false,
+                //beforeShow: function(){ alert('执行回调'); },
+                // afterHide: function(){ alert('执行回调'); }
+            });
+        }
+
+
+        $(function () {
+            var user = JSON.parse(sessionStorage.getItem("user"));
+            $("#user_name").text(user.userName);
+            showMore('manage');
+        });
+
+    </script>
+</head>
+<body>
+
+<!-- 注意：请将要放入弹框的内容放在比如id="HBox"的容器中，然后将box的值换成该ID即可，比如：$(element).hDialog({'box':'#HBox'}); -->
+<div id="pinlun"
+     style="display:none; position: fixed; background-color: rgb(255, 255, 255); top: 50%; left: 50%; margin: -135px 0px 0px -150px; z-index: 100000; width: 300px; height: 270px;"
+     class="animated rotateInDownRight dialog">
+    <form action="" method="post" onsubmit="return false;">
+        <ul class="list">
+            <li>
+                <strong>评论内容 <font color="#ff0000">*</font></strong>
+                <div class="fl">
+                    <textarea id="content" cols="45" rows="10" class="content"></textarea>
+                    <input id="goodsId" hidden type="text" value="">
+                </div>
+            </li>
+
+            <li><input onclick="submitComments()" type="submit" value="确认提交" class="submitBtn"/>
+            </li>
+        </ul>
+    </form>
+    <a id="HCloseBtn" title="关闭"
+       style="width:24px;height:24px;line-height:18px;display:inline-block;cursor:pointer;background-color:#ccc;color:#fff;font-size:1.4em;text-align:center;position:absolute;top:8px;right:8px;"><span
+            style="width:24px;height:24px;display:inline-block;">×</span></a>
+</div>
+
+<div id="xiangqing"
+     style="display: none; position: fixed; background-color: rgb(255, 255, 255); top: 50%; left: 50%; margin: -135px 0px 0px -150px; z-index: 100000; width: 300px; height: 270px;"
+     class="animated rotateInDownRight dialog">
+
+    <table style="background-color: #66afe9" align="center" width="100%" border="1px" cellspacing="0px" cellpadding="10px" id="detail">
+    </table>
+
+
+    <a id="HCloseBtn" title="关闭"
+       style="width:24px;height:24px;line-height:18px;display:inline-block;cursor:pointer;background-color:#ccc;color:#fff;font-size:1.4em;text-align:center;position:absolute;top:8px;right:8px;"><span
+            style="width:24px;height:24px;display:inline-block;">×</span></a>
+</div>
+
+<div id="app" class="app Coupon">
+    <div class="header" data-v-940d89b4="" style="">
+        <div class="container" data-v-940d89b4="">
+            <ul class="header__nav" data-v-940d89b4="">
+                <li class="nav-item" data-v-940d89b4="">
+              <span style="" data-v-940d89b4="">
+                <span class="el-popover__reference-wrapper">
+                  <span id="user_name" data-v-940d89b4="" class="el-popover__reference"
+                        aria-describedby="el-popover-5464"
+                        tabindex="0">
+<!--                    userName-->
+                  </span>
+                </span>
+              </span>
+                    <a href="https://www.huishoubao.com/Login" data-v-940d89b4="" class="" style="display: none;">登录</a>
+                </li>
+                <li class="nav-item" data-v-940d89b4="">
+                    <a href="https://www.huishoubao.com/news/8493.html?pid=1001" target="_blank"
+                       data-v-940d89b4="">交易流程</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div data-v-20a7322c="" class="floor-search">
+        <div data-v-20a7322c="" class="container clearfix">
+            <div data-v-20a7322c="" class="logo-wrap">
+                <a data-v-20a7322c="" href="https://www.huishoubao.com/" class="router-link-active">
+                    <img data-v-20a7322c="" src="../user-center_files/logo.png" class="icon-logo">
+                </a>
+            </div>
+            <div data-v-032ad854="" data-v-20a7322c="" class="search-form"><input data-v-032ad854=""
+                                                                                  placeholder="输入您想要估价的机型"
+                                                                                  class="search-form__input">
+                <button data-v-032ad854="" class="search-form__button"><i data-v-032ad854=""
+                                                                          class="search-form__icon-search"></i></button>
+                <ul data-v-032ad854="" class="product-list" style="display: none;"></ul>
+            </div>
+        </div>
+    </div> <!---->
+    <div data-v-a08c435e="" class="page-account">
+        <div data-v-a08c435e="" class="container">
+            <div data-v-a08c435e="" aria-label="Breadcrumb" role="navigation" class="el-breadcrumb hsb-breadcrumb"><span
+                    data-v-a08c435e="" class="el-breadcrumb__item"><span role="link"
+                                                                         class="el-breadcrumb__inner is-link">首页</span><i
+                    class="el-breadcrumb__separator el-icon-arrow-right"></i></span> <span data-v-a08c435e=""
+                                                                                           class="el-breadcrumb__item"
+                                                                                           aria-current="page"><span
+                    id="title" role="link" class="el-breadcrumb__inner">我的现金券</span><i
+                    class="el-breadcrumb__separator el-icon-arrow-right"></i></span> <!----> <!----> <!----></div>
+        </div>
+        <div data-v-a08c435e="" class="container">
+            <div data-v-a08c435e="" class="side">
+                <div data-v-a08c435e="" class="panel"><h3 data-v-a08c435e="" class="panel-hd">我的账户</h3>
+                    <div data-v-a08c435e="" class="panel-bd">
+                        <a name="manage" data-v-a08c435e="" href="javascript:showMore('manage')" class="link"><span
+                                data-v-a08c435e="">账户管理</span></a>
+                        <a name="money" data-v-a08c435e="" href="javascript:showMore('money')" class="link"><span
+                                data-v-a08c435e="">我的钱包</span></a>
+                        <a name="order" data-v-a08c435e="" href="javascript:showMore('order')" class="link"><span
+                                data-v-a08c435e="">我的订单</span></a>
+                        <a name="address" data-v-a08c435e="" href="javascript:showMore('address')" class="link"><span
+                                data-v-a08c435e="">地址管理</span></a>
+                        <a name="coupon" data-v-a08c435e="" href="javascript:showMore('coupon')" class="link"><span
+                                data-v-a08c435e="">我的现金券</span></a>
+                    </div>
+                </div>
+                <div data-v-a08c435e="" class="panel"><h3 data-v-a08c435e="" class="panel-hd">回收宝邮寄地址</h3>
+                    <div data-v-a08c435e="" class="panel-bd"><p data-v-a08c435e="">深圳市 龙华新区 龙观东路28号A栋4楼（回收宝收）</p>
+                        <p data-v-a08c435e="">Tel: 18123877635</p></div>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+
+
+            </script>
+            <!--详情展示部分-->
+            <div data-v-a08c435e="" class="main">
+                <!--账户管理-->
+                <div id="manage" data-v-a08c435e="" class="main-inner"><h3 data-v-a08c435e="" class="title">账户管理</h3>
+                    <div data-v-b898ed18="" data-v-a08c435e="" class="manage">
+                        <ul data-v-b898ed18="" class="list">
+                            <li data-v-b898ed18="" class="item"><span data-v-b898ed18="" class="item__hd">手机号码</span>
+                                <span id="phone" data-v-b898ed18="" class="item__bd"></span> <span data-v-b898ed18=""
+                                                                                                   class="item__ft">修改</span>
+                            </li>
+                            <li data-v-b898ed18="" class="item"><span data-v-b898ed18="" class="item__hd">微信</span>
+                                <span data-v-b898ed18="" class="item__bd">未绑定</span> <span data-v-b898ed18=""
+                                                                                           class="item__ft"></span>
+                            </li>
+                            <li data-v-b898ed18="" class="item"><span data-v-b898ed18="" class="item__hd">QQ</span>
+                                <span data-v-b898ed18="" class="item__bd">未绑定</span> <span data-v-b898ed18=""
+                                                                                           class="item__ft"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--我的优惠券-->
+                <div id="coupon" data-v-a08c435e="" class="main-inner"><h3 data-v-a08c435e="" class="title">我的现金券</h3>
+                    <div data-v-20910261="" data-v-a08c435e="" class="coupon-wrap">
+                        <dl data-v-20910261="" class="clearfix">
+                            <dt data-v-20910261="" class="input-wrap">
+                                <div data-v-20910261="" class="el-input"><!----><input type="text" autocomplete="off"
+                                                                                       placeholder="请输入兑换码"
+                                                                                       class="el-input__inner"><!---->
+                                    <!----><!----><!----></div>
+                            </dt>
+                            <dd data-v-20910261="" class="button-wrap">
+                                <button data-v-20910261="" disabled="disabled" type="button"
+                                        class="el-button el-button--default is-disabled"><!----><!----><span>添加</span>
+                                </button>
+                            </dd>
+                        </dl>
+                        <div data-v-20910261="" class="el-tabs el-tabs--top">
+                            <div class="el-tabs__header is-top">
+                                <div class="el-tabs__nav-wrap is-top">
+                                    <div class="el-tabs__nav-scroll">
+                                        <div role="tablist" class="el-tabs__nav is-top"
+                                             style="transform: translateX(0px);">
+                                            <div class="el-tabs__active-bar is-top"
+                                                 style="width: 59px; transform: translateX(0px);"></div>
+                                            <div id="tab-1" aria-controls="pane-1" role="tab" aria-selected="true"
+                                                 tabindex="0" class="el-tabs__item is-top is-active">未使用(0)
+                                            </div>
+                                            <div id="tab-2" aria-controls="pane-2" role="tab" tabindex="-1"
+                                                 class="el-tabs__item is-top">已使用(0)
+                                            </div>
+                                            <div id="tab-3" aria-controls="pane-3" role="tab" tabindex="-1"
+                                                 class="el-tabs__item is-top">已过期(0)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="el-tabs__content">
+                                <div data-v-20910261="" role="tabpanel" id="pane-1" aria-labelledby="tab-1"
+                                     class="el-tab-pane"></div>
+                                <div data-v-20910261="" role="tabpanel" aria-hidden="true" id="pane-2"
+                                     aria-labelledby="tab-2" class="el-tab-pane" style="display: none;"></div>
+                                <div data-v-20910261="" role="tabpanel" aria-hidden="true" id="pane-3"
+                                     aria-labelledby="tab-3" class="el-tab-pane" style="display: none;"></div>
+                            </div>
+                        </div> <!----></div>
+                </div>
+                <!--我的订单-->
+                <div id="order" data-v-a08c435e="" class="main-inner"><h3 data-v-a08c435e="" class="title">我的订单</h3>
+                    <div class="dingdan">
+                        <table width="100%" border="1px" cellpadding="1" cellspacing="1" class="table1">
+                            <tbody id="cartList">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--订单管理-->
+
+            </div>
+
+            <!--            end展示-->
+        </div>
+        <div data-v-312831e7="" data-v-a08c435e="">
+            <div data-v-312831e7="" class="sidebar">
+                <ul data-v-312831e7="">
+                    <li data-v-312831e7=""><i data-v-312831e7="" class="icon-service"></i>
+                        <p data-v-312831e7="">客服</p></li>
+                    <li data-v-312831e7=""><i data-v-312831e7="" class="icon-qrcode"></i> <!----></li>
+                    <li data-v-312831e7=""><i data-v-312831e7="" class="icon-backtop"></i>
+                        <p data-v-312831e7="">TOP</p></li>
+                </ul>
+            </div>
+            <div data-v-4914ad9b="" data-v-312831e7="">
+                <div data-v-4914ad9b="" class="backdrop" style="z-index: 1000; display: none;"></div>
+                <div data-v-4914ad9b="" class="service-popup" style="z-index: 1001; display: none;"><i
+                        data-v-4914ad9b="" class="icon-close"></i>
+                    <ul data-v-4914ad9b="" class="tab clearfix">
+                        <li data-v-4914ad9b="" class="tab-item tab-item--active"><span data-v-4914ad9b=""
+                                                                                       class="tab-item__text">回收流程</span>
+                        </li>
+                        <li data-v-4914ad9b="" class="tab-item"><span data-v-4914ad9b=""
+                                                                      class="tab-item__text">邮寄</span></li>
+                        <li data-v-4914ad9b="" class="tab-item"><span data-v-4914ad9b=""
+                                                                      class="tab-item__text">钱款</span></li>
+                        <li data-v-4914ad9b="" class="tab-item"><span data-v-4914ad9b=""
+                                                                      class="tab-item__text">质检</span></li>
+                        <li data-v-4914ad9b="" class="tab-item"><span data-v-4914ad9b=""
+                                                                      class="tab-item__text">安全隐私</span></li>
+                        <li data-v-4914ad9b="" class="tab-item"><span data-v-4914ad9b=""
+                                                                      class="tab-item__text">售后</span></li>
+                    </ul>
+                    <div data-v-4914ad9b="" class="view"><img data-v-4914ad9b=""
+                                                              data-src="//s1.huishoubao.com/static/pc/1001/img/process.png"
+                                                              src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                                              lazy="loading"></div>
+                    <div data-v-4914ad9b="" role="tablist" aria-multiselectable="true" class="el-collapse view"
+                         style="display: none;">
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-5459"
+                                 aria-describedby="el-collapse-content-5459">
+                                <div role="button" id="el-collapse-head-5459" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q1: 需要把电池，发票，充电器都邮寄过来吗？</p>
+                                    <i class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-5459"
+                                 id="el-collapse-content-5459" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A1: 如果不是全新手机，只要您寄个裸机（包含电池）即可。</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-1922"
+                                 aria-describedby="el-collapse-content-1922">
+                                <div role="button" id="el-collapse-head-1922" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q2: 快递费用谁出？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-1922"
+                                 id="el-collapse-content-1922" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A2: 建议您选择顺丰到付，由我们来出承担运费，22元封顶。</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-4098"
+                                 aria-describedby="el-collapse-content-4098">
+                                <div role="button" id="el-collapse-head-4098" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q3：我已经付了快递费，怎么办？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-4098"
+                                 id="el-collapse-content-4098" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A3: 没关系，我们核实之后，后期会补打给您，您查看到包裹签收后可以来电告知下我们，我们会帮您登记。</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-3579"
+                                 aria-describedby="el-collapse-content-3579">
+                                <div role="button" id="el-collapse-head-3579" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q4: 我有多部手机，快递费用怎么算？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-3579"
+                                 id="el-collapse-content-3579" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A4: 多部手机用一个包裹邮寄过来，可直接选择到付运费我们承担。</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-2234"
+                                 aria-describedby="el-collapse-content-2234">
+                                <div role="button" id="el-collapse-head-2234" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q5: 保价费用你们承担吗？是否需要购买？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-2234"
+                                 id="el-collapse-content-2234" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A5: 我们不承担保价费，需不需要购买看您个人意愿，如果您购买了建议您先垫付运费，后期我们会补打给您。</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-7061"
+                                 aria-describedby="el-collapse-content-7061">
+                                <div role="button" id="el-collapse-head-7061" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q6：快递费用超出了22元你们会怎么办？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-7061"
+                                 id="el-collapse-content-7061" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A6:
+                                        如果快递费用超出22元，我们会在您手机款里扣除超出的那部分。如：快递费用是23元，我们就直接在您手机款里扣1元。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-2224"
+                                 aria-describedby="el-collapse-content-2224">
+                                <div role="button" id="el-collapse-head-2224" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q7：一定要发顺丰快递吗？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-2224"
+                                 id="el-collapse-content-2224" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A7: 不是的，只是建议使用顺丰到付，其他快递公司也可以的。其他快递需要您先垫付快递费，后期会补打给您的。</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-7113"
+                                 aria-describedby="el-collapse-content-7113">
+                                <div role="button" id="el-collapse-head-7113" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q8：邮寄过来大概要几天时间？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-7113"
+                                 id="el-collapse-content-7113" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A8: 不同的地区时间会有不同，一般省外1-3天，国内除偏远地区一般4-5天。您也可以查询顺丰官网的运输时效。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-3828"
+                                 aria-describedby="el-collapse-content-3828">
+                                <div role="button" id="el-collapse-head-3828" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">
+                                    Q9：我刚邮寄了包裹，但忘记把小纸条写上了，而且物流单上的手机号码与下单的手机号码不一致。怎么办？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-3828"
+                                 id="el-collapse-content-3828" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A9: 没关系，若查询到您的包裹已签收，您可以来电把您的物流单号与下单的手机号码告诉我们去匹配。</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-v-4914ad9b="" role="tablist" aria-multiselectable="true" class="el-collapse view"
+                         style="display: none;">
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-8544"
+                                 aria-describedby="el-collapse-content-8544">
+                                <div role="button" id="el-collapse-head-8544" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q1:
+                                    在网上预估的价格和你们实际检测的价格出入大吗？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-8544"
+                                 id="el-collapse-content-8544" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A1:
+                                        如果您是按照手机实际情况进行评估，那么价格不会有很大出入，但我们要收到您的手机后进行检测，以您手机的实际情况为准。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-2140"
+                                 aria-describedby="el-collapse-content-2140">
+                                <div role="button" id="el-collapse-head-2140" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q2: 价格不满意会退回手机吗，邮费谁出？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-2140"
+                                 id="el-collapse-content-2140" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A2: 如果您对回收价格不满意，可以要求退回，退回费用由我们公司承担。</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-1143"
+                                 aria-describedby="el-collapse-content-1143">
+                                <div role="button" id="el-collapse-head-1143" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q3：支付方式是什么？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-1143"
+                                 id="el-collapse-content-1143" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A3: 目前提供微信、银行卡转账和支付宝转账两种交易方式，银行卡暂不支持信用卡</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-9582"
+                                 aria-describedby="el-collapse-content-9582">
+                                <div role="button" id="el-collapse-head-9582" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q4: 多久收到钱?</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-9582"
+                                 id="el-collapse-content-9582" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A4: 回收宝承诺，收到手机后24小时内进行检测确认并打款。</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-4978"
+                                 aria-describedby="el-collapse-content-4978">
+                                <div role="button" id="el-collapse-head-4978" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q5:
+                                    留了支付宝账号，订单已经好多天都是待付款，为什么一直没支付？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-4978"
+                                 id="el-collapse-content-4978" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A5:
+                                        您核实下您的支付宝账号是否正确，提供的姓名是否经过实名认证，如果不一致的话请尽快来电告知下正确的支付宝账号和姓名，我们会优先帮您付款。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-v-4914ad9b="" role="tablist" aria-multiselectable="true" class="el-collapse view"
+                         style="display: none;">
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-5732"
+                                 aria-describedby="el-collapse-content-5732">
+                                <div role="button" id="el-collapse-head-5732" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q1: 回收宝如何质检？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-5732"
+                                 id="el-collapse-content-5732" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A1: 首先了解是否是真机，从业多年的专业质检人员采用盲检技术仔细检查，安排付款。</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-228"
+                                 aria-describedby="el-collapse-content-228">
+                                <div role="button" id="el-collapse-head-228" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q2:
+                                    我把手机邮寄过来后，万一你们把我手机拆机了，换了零件呢？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-228"
+                                 id="el-collapse-content-228" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A2: 请您放心我们不做任何拆机行为。如果有拆机行为，您的手机维修标签会有损毁。</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-v-4914ad9b="" role="tablist" aria-multiselectable="true" class="el-collapse view"
+                         style="display: none;">
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-3271"
+                                 aria-describedby="el-collapse-content-3271">
+                                <div role="button" id="el-collapse-head-3271" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q1: 会不会泄露我的数据和隐私呢？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-3271"
+                                 id="el-collapse-content-3271" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A1:建议您将手机的锁屏密码及账号解除，并恢复出厂设置。此外，回收宝会使用专业的数据清除和覆盖技术，保证您的数据安全
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-1892"
+                                 aria-describedby="el-collapse-content-1892">
+                                <div role="button" id="el-collapse-head-1892" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q2:
+                                    我不记得我icloud密码了，怎么办？回不回收？</p><i
+                                        class="el-collapse-item__arrow el-icon-arrow-right"></i></div>
+                            </div>
+                            <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-1892"
+                                 id="el-collapse-content-1892" class="el-collapse-item__wrap" style="display: none;">
+                                <div class="el-collapse-item__content">
+                                    <div data-v-4914ad9b="">A2:
+                                        您可以联系您手机售后客服帮助找回您的密码，对于icloud无法解除的机子，回收宝不予回收；若收到此类机子，将退回，您需承担双向运费
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-v-4914ad9b="" role="tablist" aria-multiselectable="true" class="el-collapse view"
+                         style="display: none;">
+                        <div data-v-4914ad9b="" class="el-collapse-item">
+                            <div role="tab" aria-controls="el-collapse-content-2114"
+                                 aria-describedby="el-collapse-content-2114">
+                                <div role="button" id="el-collapse-head-2114" tabindex="0"
+                                     class="el-collapse-item__header"><p data-v-4914ad9b="">Q1: 什么情况手机会被退回？</p>
+                                    <i class="el-collapse-item__arrow el-icon-arrow-right">
+
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" aria-hidden="true" aria-labelledby="el-collapse-head-2114"
+                         id="el-collapse-content-2114" class="el-collapse-item__wrap" style="display: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

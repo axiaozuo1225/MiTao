@@ -21,5 +21,7 @@
     <mvc:resources mapping="/images/**" location="/images/"/>
     <mvc:resources mapping="/html/**" location="/html/"/>
     <mvc:resources mapping="/fonts/**" location="/fonts/"/>
+    <mvc:resources mapping="/pinggu/**" location="/pinggu/"/>
+    <mvc:resources mapping="/user-center_files/**" location="/user-center_files/"/>
 
 </beans>

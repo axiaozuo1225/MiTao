@@ -7,4 +7,7 @@ public interface UserMapper {
 
     @Select("select * from tb_user where user_name = #{userName} and user_password = #{userPassword}")
     User checkUser(User user);
+
+    @Select("select * from tb_user where user_id = #{userId}")
+    User selectUser(String userId);
 }

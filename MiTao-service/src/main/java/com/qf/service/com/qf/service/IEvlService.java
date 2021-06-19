@@ -9,5 +9,5 @@ public interface IEvlService {
 
     List<EvlType> showEvlType(String goodsId);
 
-    List<EvlDetail> showDetail(String[] infoDetailId);
+    List<EvlDetail> showDetail(String goodsId,String[] infoDetailId);
 }

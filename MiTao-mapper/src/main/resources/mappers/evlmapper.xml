@@ -27,7 +27,18 @@
                  inner join tb_evl_basic teb on tet.evl_type_id = teb.basic_type
                  inner join tb_evl_detail ted on teb.basic_info_id = ted.fk_basic_info_id
                  inner join tb_evl_goods_detail tegd on ted.info_detail_id = tegd.fk_info_detail_id
-        where tegd.fk_good_id = #{goodsId} order by tet.evl_type_id
+        where tegd.fk_good_id = #{goodsId}
+        order by tet.evl_type_id
+    </select>
+
+
+
+    <select id="selectEvlDetail" resultType="EvlDetail">
+        select * from tb_evl_goods_detail tegd inner join tb_evl_detail ted
+        on tegd.fk_info_detail_id = ted.info_detail_id where tegd.fk_good_id = #{goodsId} and tegd.fk_info_detail_id in
+        <foreach collection="infoDetailIds" item="infoDetailId" open="(" close=")" separator=",">
+            #{infoDetailId}
+        </foreach>
     </select>
 
 

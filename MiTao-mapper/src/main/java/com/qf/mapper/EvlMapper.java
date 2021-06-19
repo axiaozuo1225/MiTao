@@ -11,7 +11,6 @@ public interface EvlMapper {
 
     List<EvlType> selectEvlType(@Param("goodsId") String goodsId);
 
-    @Select("select * from tb_evl_detail where info_detail_id = #{infoDetailIds}")
-    EvlDetail selectEvlDetail(String infoDetailIds);
+    List<EvlDetail> selectEvlDetail(@Param("goodsId") String goodsId,@Param("infoDetailIds") String[] infoDetailIds);
 
 }

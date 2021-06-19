@@ -1,6 +1,10 @@
 <!DOCTYPE>
 <html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>订单提交-回购网 - 手机回收网 | 二手手机交易 | 笔记本回收 | 平板回收</title>
     <meta name="keywords" content="手机回收,二手手机回收,手机回收网,二手手机回收网,二手手机,笔记本回收,平板电脑回收,数码相机回收,旧手机回收,苹果手机回收"/>
@@ -13,6 +17,12 @@
     <link rel="alternate" media="only screen and(max-width: 640px)" href="http://m.ihuigo.com/order/cart.html">
     <link href="../favicon.ico" type=image/x-icon rel="Icon"/>
     <link href="../css/new_css/global.css" rel="stylesheet" type="text/css"/>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script src="../js/jquery-1.11.1.min.js"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="../js/bootstrap.min.js"></script>
     <script src="../js/new_js/jquery-1.4.2.js" type="text/javascript"></script>
     <script src="../js/new_js/new_public.js" type="text/javascript"></script>
     <script type="text/javascript">
@@ -44,7 +54,7 @@
     <input type="hidden" name="typeid" id="typeid" value="1"/>
     <!--提交订单-->
     <div class="contanier page">
-        <div class="current"><a href="/">首页</a><span>></span><em>提交订单</em></div>
+        <div class="current"><a href="../html/index.html">首页</a><span>></span><em>提交订单</em></div>
         <div style="padding:0 15px;">
             <div class="areas"><SPAN>请选择您的收款方式：</SPAN></div>
 
@@ -86,131 +96,270 @@
             <div class="process none" id="t2"><img src="../images/liucheng2.jpg"/></div>
             <div class="process none" id="t3"><img src="../images/liucheng3_1.jpg"/></div>
             <div class="ihuigo">
+
                 <!-- 通用联系方式start-->
                 <div class="sub_con_top">
                     <div class="contact_ways">联系方式：</div>
-                    <div class="contanct_c check" name="item_member_addr" id="item_member_addr_0">
+
+                    <script type="text/javascript">
+
+                        var showAddress = function (num) {
+                            $("div[name='item_member_addr']").removeClass('check');
+                            $("#item_member_addr_" + num).addClass('check');
+                            $("div[name='new_member_addr']").css("display", "none");
+                            $("#new_member_addr_" + num).css("display", "block")
+                        }
+
+                        var addrVal = function (addressId) {
+                            $("#address1").val(addressId);
+                        }
+
+                        //校验支付宝账号
+                        var checkAliPay = function () {
+                            var accName = $("#alipay_realname").val();
+                            var accNumber = $("#alipay_username").val();
+                            // $.ajax({})
+                        }
+
+                        var upCart2 = function (addressId) {
+
+                            var user = JSON.parse(sessionStorage.getItem("user"));
+                            var goods = JSON.parse(localStorage.getItem("goods"));
+                            var detailIds = JSON.parse(localStorage.getItem("info"));
+
+                            var order = {
+                                "boGoodsId": goods.goodsId,
+                                "boGoodsName": goods.goodsName,
+                                "boPrice": sessionStorage.getItem("money"),
+                                "boStatus": 0,
+                                "boAddress": addressId,
+                                "boUserId": user.userId,
+                                "boCreatetime": new Date(),
+                                "boAccountId": 1
+                            };
+
+                            // console.log(order);
+                            $.ajax({
+                                url: "order/addOrder/" + detailIds,
+                                type: "post",
+                                contentType: "application/json",
+                                data: JSON.stringify(order),
+                                success: function (resultVO) {
+                                    // console.log(resultVO);
+                                    alert(resultVO.msg);
+                                    location.href = "index.html";
+                                },
+                                dataType: "json"
+                            })
+                        }
+
+                        //提交回购单
+                        var upCart = function () {
+
+                            checkAliPay();
+
+                            var user = JSON.parse(sessionStorage.getItem("user"));
+
+                            $("div[name='item_member_addr']").each(function () {
+                                var $this = $(this);
+
+                                if ($this.hasClass('check')) {
+                                    var id = $this.attr("id");
+                                    //被选的input的val
+                                    var value = $("#" + id + " input:checked").val();
+
+                                    if (value == 0) {
+                                        var mapA = new Map();
+                                        mapA.set("userId", user.userId)
+                                        // console.log(user.userId)
+
+                                        var boo = true;
+                                        $("#new_member_addr_0 input").each(function () {
+                                            if (!$(this).val()) {
+                                                boo = false;
+                                            }
+                                        });
+
+                                        if (boo) {
+                                            $("#new_member_addr_0 input").each(function () {
+                                                mapA.set($(this).attr("name"), $(this).val());
+                                            });
+                                            var address = {
+                                                "adrUserId": mapA.get("userId"),
+                                                "adrName": mapA.get("adrName"),
+                                                "adrPhone": mapA.get("adrPhone"),
+                                                "adrProvince": mapA.get("adrProvince"),
+                                                "adrCity": mapA.get("adrCity"),
+                                                "adrZone": mapA.get("adrZone"),
+                                                "adrDetail": mapA.get("adrDetail"),
+                                                "defaultStatus": 1
+                                            };
+
+                                            $.ajax({
+                                                url: "address/addAddress",
+                                                type: "post",
+                                                contentType: "application/json",
+                                                data: JSON.stringify(address),
+                                                success: function (result) {
+                                                    //插入新地址的主键id
+                                                    console.log(result)
+                                                    upCart2(value)
+                                                },
+                                                dataType: "json"
+                                            });
+                                        } else {
+                                            alert("还有项目未填写!");
+                                        }
+                                        return
+                                    }
+                                    //使用已有地址
+                                    upCart2(value);
+                                }
+                            });
+                        }
+
+
+                        $(function () {
+
+                            var user = JSON.parse(sessionStorage.getItem("user"));
+
+                            $.ajax({
+                                url: "address/showAddress",
+                                type: "post",
+                                contentType: "application/json",
+                                data: JSON.stringify(user.userId),
+                                success: function (result) {
+                                    // console.log(result)
+                                    var content = "";
+
+                                    for (let i = 0; i < result.length; i++) {
+
+                                        var address = "姓名: " + result[i].adrName + " 联系电话: " + result[i].adrPhone + "详细住址: " + result[i].adrProvince + result[i].adrCity + result[i].adrZone + result[i].adrDetail;
+
+                                        if (result[i].defaultStatus == 0) {
+                                            $("#address1").val(result[i].adrId);
+
+                                            content += "<div class='radio' style='padding-left: 80px'><label><input type='radio' name='address' checked='checked' onclick='addrVal(" + result[i].adrId + ")'>" + address + "</label></div>"
+                                        } else {
+
+                                            content += "<div class='radio' style='padding-left: 80px'><label><input type='radio' name='address' onclick='addrVal(" + result[i].adrId + ")'>" + address + "</label></div>"
+                                        }
+
+                                    }
+                                    $("#new_member_addr_1").append(content);
+                                },
+                                dataType: "json"
+                            });
+                        });
+
+
+                    </script>
+
+                    <div class="contanct_c check" name="item_member_addr" id="item_member_addr_1">
                         <label>
-                            <input type="radio" name="member_addr" value="0" checked="checked"
-                                   onClick="new_member_addr(0)"/>
+                            <input id="address1" type="radio" name="member_addr" value="0"
+                                   onClick="showAddress(1)"/>
+                            <span>地址列表</span>
+                        </label>
+
+                    </div>
+                    <!--自选地址-->
+                    <div name="new_member_addr" id="new_member_addr_1" style="display: none">
+                        <!--内容-->
+                    </div>
+
+                    <div class="contanct_c" name="item_member_addr" id="item_member_addr_0">
+                        <label>
+                            <input id="address2" type="radio" name="member_addr" value="0"
+                                   onClick="showAddress(0)"/>
                             <span>使用新地址</span></label>
                     </div>
 
                     <!-- 新地址start-->
-                    <div id="new_member_addr_div">
+                    <div name="new_member_addr" id="new_member_addr_0" style="display: none">
                         <div class="clear" style="height:15px;"></div>
+
+
                         <ul class="contact_list">
                             <li class="contact_text">联系人：</li>
-                            <li class="contact_texts"><span class="img_1"><img
-                                    src="../images/in_1.gif"></span><span class="img_2"><input name="link_name"
-                                                                                               id="link_name"
-                                                                                               type="text"></span> <span
-                                    class="img_1"><IMG src="../images/in_3.gif"></span><span class="img_3"><em
-                                    style="color: red; font-size:12px;margin-right: 10px;">*</em></span></li>
+                            <li class="contact_texts">
+                                <span class="img_1">
+                                <img src="../images/in_1.gif"></span>
+                                <span class="img_2">
+                                <input name="adrName" id="adrName" type="text"></span>
+                                <span class="img_1"><IMG src="../images/in_3.gif"></span>
+                                <span class="img_3"><em
+                                        style="color: red; font-size:12px;margin-right: 10px;">*</em></span>
+                            </li>
+
                             <div class="clear"></div>
                         </ul>
+
+
                         <ul class="contact_list">
                             <li class="contact_text">手机号码：</li>
-                            <li class="contact_texts"><span class="img_1"><img
-                                    src="../images/in_1.gif"></span><span class="img_2"><input name="mobile" id="mobile"
-                                                                                               type="text"></span> <span
-                                    class="img_1"><IMG src="../images/in_3.gif"></span><span class="img_3"><em
-                                    style="color: red; font-size:12px;margin-right: 10px;">*</em></span></li>
+                            <li class="contact_texts"><span class="img_1"><img src="../images/in_1.gif"></span>
+                                <span class="img_2">
+                                <input name="adrPhone" id="adrPhone" type="text"></span>
+                                <span class="img_1"><IMG src="../images/in_3.gif"></span>
+                                <span class="img_3">
+                                    <em style="color: red; font-size:12px;margin-right: 10px;">*</em>
+                                </span>
+                            </li>
                             <div class="clear"></div>
                         </ul>
-                        <div class="mod_select" style="margin-bottom:12px;">
-                            <ul>
-                                <li class="contact_text" style="width:88px;">我的地址：</li>
-                                <li>
 
-                                    <div class="select_box">
-                                        <span class="select_txt" id="text_province">请选择省份</span><em
-                                            class="selet_open"><b></b></em>
-                                        <input type="hidden" id="province" name="province" value="0"/>
-                                        <div class="option" id="option_province"></div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="select_box">
-                                        <span class="select_txt" id="text_city">请选择城市</span><em
-                                            class="selet_open"><b></b></em>
-                                        <input type="hidden" id="city" name="city" value="0"/>
-                                        <div class="option" id="option_city"></div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="select_box">
-                                        <span class="select_txt" id="text_district">请选择区县</span><em
-                                            class="selet_open"><b></b></em>
-                                        <input type="hidden" id="district" name="district" value="0"/>
-                                        <input type="hidden" id="school_id" name="school_id" value="0"/>
-                                        <div class="option" style="position:absolute;right:0 !important; "
-                                             id="option_district">
-                                        </div>
-                                    </div>
-                                </li>
 
+                        <ul class="contact_list">
+                            <li class="contact_text">我的地址：</li>
+                            <li class="contact_texts">
+
+                                <span class="img_1">
+                                <img src="../images/in_1.gif"></span>
+                                <span class="img_2">
+                                <input name="adrProvince" id="adrProvince" type="text" placeholder="请输入省份"></span>
+                                <span class="img_1"><IMG src="../images/in_3.gif"></span>
                                 <span class="img_3"><em
-                                        style="color: red; font-size:12px;margin-right: 10px;">*</em></span> </li>
-                                <div class="clear"></div>
-                            </ul>
-                        </div>
-                        <div>
-                            <ul class="contact_list">
-                                <li class="contact_text">详细地址：</li>
-                                <li class="contact_texts"><span class="img_1"><img
-                                        src="../images/in_1.gif"></span><span class="img_2_area"><input name="address"
-                                                                                                        id="address"
-                                                                                                        type="text"></span>
-                                    <span class="img_1"><IMG src="../images/in_3.gif"></span></li>
-                                <div class="clear"></div>
-                            </ul>
-                        </div>
+                                        style="color: red; font-size:12px;margin-right: 10px;">*</em></span>
+
+                                <span class="img_1">
+                                <img src="../images/in_1.gif"></span>
+                                <span class="img_2">
+                                <input name="adrCity" id="adrCity" type="text" placeholder="请输入城市"></span>
+                                <span class="img_1"><IMG src="../images/in_3.gif"></span>
+                                <span class="img_3"><em
+                                        style="color: red; font-size:12px;margin-right: 10px;">*</em></span> <span
+                                    class="img_1">
+
+                                <img src="../images/in_1.gif"></span>
+                                <span class="img_2">
+                                <input name="adrZone" id="adrZone" type="text" placeholder="请输入镇区"></span>
+                                <span class="img_1"><IMG src="../images/in_3.gif"></span>
+                                <span class="img_3"><em
+                                        style="color: red; font-size:12px;margin-right: 10px;">*</em></span>
+
+                            </li>
+                            <div class="clear"></div>
+                        </ul>
+
+
+                        <ul class="contact_list">
+                            <li class="contact_text">详细地址：</li>
+                            <li class="contact_texts"><span class="img_1"><img
+                                    src="../images/in_1.gif"></span><span class="img_2_area">
+                                    <input name="adrDetail" id="adrDetail" type="text"></span>
+                                <span class="img_1"><IMG src="../images/in_3.gif"></span></li>
+                            <div class="clear"></div>
+                        </ul>
+
+
                     </div>
                     <link rel="stylesheet" type="text/css" href="../js/calendar/calendar.css"/>
                     <script type="text/javascript" src="js/calendar.php"></script>
-                    <!--上门取件时间-->
-                    <div class="contact_list" style="margin-top:20px;">
-                        <div id="div_addr" style="display:none;">
-                            <ul>
-                                <li class="contact_textval">上门取件时间：</li>
-                            </ul>
-                            <ul class="area_list">
-                                <li class="area_list_texts"><input name="stime" id="stime" type="text"
-                                                                   style="border:0px;"
-                                                                   onfocus="return showCalendar('stime', '%Y-%m-%d %H:%m', '24', false, 'stime');"
-                                                                   value=""></li>
-                                <li class="area_list_bg"></li>
-                            </ul>
-                            <ul class="area_lists">
-                                <li>到</li>
-                            </ul>
-                            <ul class="area_list">
-                                <li class="area_list_texts">
-                                    <input name="etime" id="etime" type="text" style="border:0px; "
-                                           onfocus="return showCalendar('etime', '%Y-%m-%d %H:%m', '24', false, 'etime');"
-                                           value="">
-                                </li>
-                                <li class="area_list_bg"></li>
-                            </ul>
-                            <div class="clear"></div>
-                        </div>
 
-                        <div class="kuaidi"><!--<a href="###" class="on">回购网联系快递</a>-->
-                            <input type="checkbox" value='y' name="express_true" id="express_true"
-                                   onclick="express_true_click()"/><label for="express_true">回购网联系快递</label>
-                        </div>
-                        <script>
-                            function express_true_click() {
-                                if ($("#express_true").attr('checked')) {
-                                    $("#div_addr").css('display', 'block');
-                                } else {
-                                    $("#div_addr").css('display', 'none');
-                                }
-                            }
-                        </script>
-                    </div>
                     <!-- 新地址end-->
+
+
                     <script>
                         function new_member_addr(val) {
                             $("div[name='item_member_addr']").attr('class', 'contanct_c');
@@ -327,35 +476,6 @@
                 </div>
                 <!-- 银行收款end-->
             </div>
-            <div id="s1" class="block">
-                <!-- 手机解锁情况start-->
-                <div class="sub_con_foot">
-                    <div class="contact_ways m_unclock">
-                        手机解锁情况：
-                        <label>
-                            <span><input type="radio" name="lock" value="y">已解锁</span>
-                            <span class="guide">解锁指引<i>？</i></span>
-                            <span style="margin-left:30px;"><input type="radio" name="lock" value="n">回购网解锁</span>
-                        </label>
-                        <div class="alertTips">
-                            <p>iPhone设置取消开机密码<span>设置-Touch ID和密码-点击关闭密码</span></p>
-                            <p>iPhone关闭iCloud<span>设置-iCloud-注销-从我的iPhone删除-输入密码-删除</span></p>
-                            <p>魅族手机取消开机密码<span>设置-安全-屏幕密码-输入密码-关闭</span></p>
-                            <p>魅族手机关闭Flyme:<span>方法1：设置-账户-退出账户</span><span>方法2：打开Flyme官网登录-云服务-登录选择机型-远程退出 </span></p>
-                        </div>
-                    </div>
-                    <div style="padding-left:100px; margin-bottom:15px;">
-                        <input style="width:410px;padding:3px 10px;display:none;" type="text" name="pwd"
-                               placeholder="请提供开机密码和iCloud或Flyme账号密码（备注类型并以空格间隔）">
-                        <p style="margin-top:10px;">
-                            温馨提示：发货前请确保以下账号密码已解锁，未解除将无法质检导致交易失败。<br>
-                            1、开机密码；2、iCloud或Flyme账号密码；3、还原密码
-                        </p>
-                    </div>
-                </div>
-
-                <!-- 手机解锁情况end-->
-            </div>
 
 
             <script>
@@ -399,24 +519,21 @@
                         <ul class="contact_list">
                             <li class="contact_text">姓名：</li>
                             <li class="contact_texts"><span class="img_1"><img
-                                    src="../images/in_1.gif"></span><span class="img_2"><input name="alipay_realname"
-                                                                                               id="alipay_realname"
-                                                                                               type="text"
-                                                                                               value=""></span> <span
-                                    class="img_1"><IMG src="../images/in_3.gif"></span><span class="img_3"><em
-                                    style="color: red; font-size:12px;margin-right: 10px;">*</em></span></li>
+                                    src="../images/in_1.gif"></span><span class="img_2">
+                                <input name="alipay_realname" id="alipay_realname" type="text" value=""></span>
+                                <span class="img_1"><IMG src="../images/in_3.gif"></span>
+                                <span class="img_3"><em
+                                        style="color: red; font-size:12px;margin-right: 10px;">*</em></span></li>
                             <div class="clear"></div>
                         </ul>
 
                         <ul class="contact_list">
                             <li class="contact_text">支付宝账号：</li>
                             <li class="contact_texts"><span class="img_1"><img
-                                    src="../images/in_1.gif"></span><span class="img_2"><input name="alipay_username"
-                                                                                               id="alipay_username"
-                                                                                               type="text"
-                                                                                               value=""></span> <span
-                                    class="img_1"><IMG src="../images/in_3.gif"></span><span class="img_3"><em
-                                    style="color: red; font-size:12px;margin-right: 10px;">*亲，必须是实名认证的支付宝账号哦！</em></span>
+                                    src="../images/in_1.gif"></span><span class="img_2">
+                                <input name="alipay_username" id="alipay_username" type="text" value=""></span>
+                                <span class="img_1"><IMG src="../images/in_3.gif"></span><span class="img_3">
+                                    <em style="color: red; font-size:12px;margin-right: 10px;">*亲，必须是实名认证的支付宝账号哦！</em></span>
                             </li>
                             <div class="clear"></div>
                         </ul>
@@ -509,6 +626,7 @@
         <div class="clear"></div>
         <div class="tijiao" style="position:relative">
             <script>
+
                 function baoxian_click(obj) {
                     var flag = $(obj).attr('checked');
                     if (flag) {
@@ -517,6 +635,8 @@
                         $("#baoxian_content").css('display', 'none');
                     }
                 }
+
+
             </script>
             <span style="position:absolute; right:74px; top:30px;">
       <input type="checkbox" value="y" name="ifbaoxian" id="ifbaoxian" onclick="baoxian_click(this)"/>
@@ -526,7 +646,7 @@
             &nbsp;&nbsp;
             <label><a href="/service/legal.html" target="_blank" class="on">我已查看并同意回收协议</a></label>
             <input type="button" name="sub_button" id="sub_button" value="提交回购单" class="input_btn2"
-                   onclick="return checkfrom()"/>
+                   onclick="upCart()"/>
         </div>
 
         <dl id="baoxian_content" style="display:none;">
@@ -551,20 +671,21 @@
             var goods = JSON.parse(localStorage.getItem("goods"));
 
             var detailIds = localStorage.getItem("info");
-            console.log(detailIds)
+            var money = sessionStorage.getItem("money");
+            // console.log(detailIds)
 
             $.ajax({
-                url:"evl/showDetail",
-                type:"post",
-                data:detailIds,
-                contentType:"application/json",
+                url: "evl/showDetail/" + goods.goodsId + "",
+                type: "post",
+                data: detailIds,
+                contentType: "application/json",
                 success: function (details) {
                     // localStorage.setItem("info",details);
 
                     var content = "<td height='95' align='center'><div class='contact_way_img'><img width='50' height='50' src='../images/goods/" + goods.goodsImg + "'></div>" +
                         "<div class='contact_way_txt'><p><span>" + goods.goodsName + "</span></p></div>" +
                         "<div class='clear'></div></td><td align='center' style='line-height:22px;'>" +
-                        "<h3>" + goods.goodsCost + "</h3></td></td>" +
+                        "<h3>" + money + "</h3></td></td>" +
                         "<td style='padding-left:28px; line-height: 18px;text-align: left;'>";
 
                     for (let i = 0; i < details.length; i++) {
@@ -576,8 +697,6 @@
                 },
                 dataType: "json"
             })
-
-
         })
     </script>
     <!--订单-->
@@ -592,47 +711,11 @@
             </tr>
 
             <tr id="info">
-<!--                <td height='95' align='center'>-->
-<!--                    <div class='contact_way_img'><img width='50' height='50' src='../images/goods/iphone7.png'></div>-->
-<!--                    <div class='contact_way_txt'><p><span>iphone 7</span></p></div>-->
-<!--                    <div class='clear'></div>-->
-<!--                </td>-->
-<!--                <td align='center' style='line-height:22px;'>-->
-<!--                    <h3>￥2800.00</h3>-->
-<!--                </td>-->
-<!--                </td>-->
-                <!--                <td style='padding-left:28px; line-height: 18px;text-align: left;'>-->
-                <!--		  								<span>-->
-                <!--									<a>大陆行货</a>-->
-                <!--									|<a>保修一个月以上</a>-->
-                <!--								</span>-->
-                <!--                    <br/>-->
-
-                <!--                    <span>-->
-                <!--									<a>红色</a>-->
-                <!--									 |&nbsp;&nbsp;<a>完好无破损</a>-->
-                <!--									 |&nbsp;&nbsp;<a>显示完好</a>-->
-                <!--									 |&nbsp;&nbsp;<a>通话功能正常</a>-->
-                <!--									 |&nbsp;&nbsp;<a>iCloud账号可以解除</a>-->
-                <!--									 |&nbsp;&nbsp;<a>全新机</a>-->
-                <!--									 |&nbsp;&nbsp;<a>开机正常</a>-->
-                <!--									 |&nbsp;&nbsp;<a>机身无进水受潮</a>-->
-                <!--									 |&nbsp;&nbsp;<a>按键接口及卡槽正常</a>-->
-                <!--									 |&nbsp;&nbsp;<a>无拆修</a>-->
-                <!--									 |&nbsp;&nbsp;<a>指纹功能正常</a>-->
-                <!--									 |&nbsp;&nbsp;<a>蓝牙/wifi功能正常</a>-->
-                <!--									 |&nbsp;&nbsp;<a>照相及感光功能正常</a>-->
-                <!--									 |&nbsp;&nbsp;<a>有换机</a>-->
-                <!--									 |&nbsp;&nbsp;<a>32G</a>-->
-                <!--									 |&nbsp;&nbsp;<a>机身无变形</a>-->
-                <!--								</span>-->
-
-                <!--                </td>-->
             </tr>
             </tbody>
         </table>
-        <div class='foot_bor'><em>1</em>件产品总计回收价格<em style='font-size:18px;'>￥2800</em>
-            <!--<span>赠送环保券 <i>30</i>元--></span></div>
+        <!--        <div class='foot_bor'><em>1</em>件产品总计回收价格<em style='font-size:18px;'>￥2800</em>-->
+        <!--<span>赠送环保券 <i>30</i>元--></span></div>
     </div>
     <!--订单-->
 

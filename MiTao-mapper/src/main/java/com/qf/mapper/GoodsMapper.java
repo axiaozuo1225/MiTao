@@ -1,5 +1,6 @@
 package com.qf.mapper;
 
+import com.qf.entity.Comments;
 import com.qf.entity.Goods;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -11,4 +12,8 @@ public interface GoodsMapper {
 
     @Select("select * from tb_goods where goods_id = #{goodsId}")
     Goods selectGoodsInfo(String goodsId);
+
+    int insertComments(Comments comments);
+
+    List<Comments> selectComments(String GoodsId);
 }

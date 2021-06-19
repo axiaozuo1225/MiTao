@@ -19,9 +19,15 @@ public class UserController {
     @ResponseBody
     public User checkUser (@RequestBody User user){
 
-        User user1 = userService.checkUser(user);
+        return userService.checkUser(user);
 //        System.out.println(user1);
-        return user1;
+
+    }
+
+    @RequestMapping("findUser")
+    @ResponseBody
+    public User findUserById (@RequestBody String userId){
+        return userService.findUserById(userId);
     }
 
 }

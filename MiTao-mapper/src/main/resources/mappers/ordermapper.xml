@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace约定为接口的全限定名-->
+<mapper namespace="com.qf.mapper.OrderMapper">
+
+
+    <insert id="insertOrder" parameterType="BuyBackOrder" useGeneratedKeys="true" keyProperty="boId">
+        insert into tb_buy_back_order (bo_goods_id, bo_goods_name, bo_price, bo_status, bo_address, bo_user_id,
+                                       bo_createtime, bo_account_id)
+        values (#{boGoodsId}, #{boGoodsName}, #{boPrice}, #{boStatus}, #{boAddress}, #{boUserId}, #{boCreatetime},
+                #{boAccountId})
+    </insert>
+
+    <insert id="insertOrderDetail">
+        insert into tb_order_detail ( od_order_id, od_evl_detail_id)
+        VALUES
+        <foreach collection="detailIds" item="detailId" separator=",">
+            (#{buyBackOrder.boId},#{detailId})
+        </foreach>
+    </insert>
+
+    <select id="selectOrder" resultType="BuyBackOrder">
+        select *
+        from tb_buy_back_order
+        where bo_user_id = #{userId}
+    </select>
+
+
+    <resultMap id="OrderMap" type="BuyBackOrder">
+        <id column="bo_id" property="boId"/>
+        <result column="bo_goods_id" property="boGoodsId"/>
+        <result column="bo_goods_name" property="boGoodsName"/>
+        <result column="bo_price" property="boPrice"/>
+        <result column="bo_status" property="boStatus"/>
+        <result column="bo_address" property="boAddress"/>
+        <result column="bo_createtime" property="boCreatetime"/>
+        <result column="bo_account_id" property="boAccountId"/>
+        <association property="address" javaType="Address">
+            <id column="adr_id" property="adrId"/>
+            <result column="adr_phone" property="adrPhone"/>
+        </association>
+        <collection property="evlDetailList" ofType="EvlDetail">
+            <id column="info_detail_id" property="infoDetailId"/>
+            <id column="info_detail_name" property="infoDetailName"/>
+        </collection>
+    </resultMap>
+    <select id="selectOrderDetail" resultMap="OrderMap">
+        select *
+        from tb_buy_back_order tbbo
+                 inner join tb_goods tg on tbbo.bo_goods_id = tg.goods_id
+                 inner join tb_order_detail tod on tbbo.bo_id = tod.od_order_id
+                 inner join tb_evl_detail ted on tod.od_evl_detail_id = ted.info_detail_id
+                 inner join tb_address ta on tbbo.bo_address = ta.adr_id
+        where tbbo.bo_id = #{orderId}
+    </select>
+    <!--    <resultMap id="OrderDTOMap" type="OrderDTO">-->
+    <!--        <association property="buyBackOrder">-->
+    <!--            <id column="bo_id" property="boId"/>-->
+    <!--            <result column="bo_goods_id" property="boGoodsId"/>-->
+    <!--            <result column="bo_goods_name" property="boGoodsName"/>-->
+    <!--            <result column="bo_price" property="boPrice"/>-->
+    <!--            <result column="bo_createtime" property="boCreatetime"/>-->
+    <!--        </association>-->
+    <!--        <association property="address">-->
+    <!--            <id column="adr_id" property="adrId"/>-->
+    <!--            <result column="adr_name" property="adrName"/>-->
+    <!--            <result column="adr_phone" property="adrPhone"/>-->
+    <!--        </association>-->
+    <!--        <collection property="evlDetailList" ofType="EvlDetail">-->
+    <!--            <id column="info_detail_id" property="infoDetailId"/>-->
+    <!--        </collection>-->
+    <!--    </resultMap>-->
+    <!--    <select id="selectOrder" resultMap="OrderDTOMap">-->
+    <!--        select *-->
+    <!--        from tb_buy_back_order tbbo-->
+    <!--                 inner join tb_order_detail tod on tod.od_order_id = tbbo.bo_id-->
+    <!--                 inner join tb_evl_detail ted on tod.od_evl_detail_id = ted.info_detail_id-->
+    <!--        where tbbo.bo_user_id = #{userId}-->
+    <!--    </select>-->
+
+</mapper>

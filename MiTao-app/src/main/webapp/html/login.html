@@ -26,9 +26,9 @@
                 data: JSON.stringify({"userName": username, "userPassword": password}),
                 contentType: "application/json",
                 success: function (data) {
-                    console.log(data)
+                    // console.log(JSON.stringify(data))
                     if (data != null && "" != data) {
-                        sessionStorage.setItem("user", data);
+                        sessionStorage.setItem("user", JSON.stringify(data));
                         history.back();
                     } else {
                         $("#err").text("用户名或密码错误");
