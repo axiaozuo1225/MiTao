@@ -29,6 +29,7 @@
                 data: JSON.stringify(orderId),
                 contentType: "application/json",
                 success: function (result) {
+                    console.log(result)
                     var content = "<tr><td>商品名称</td><td>回购价</td><td>订单状态</td><td>联系电话</td><td>下单时间</td><td>支付方式</td><td>回购商品详情描述</td></tr>"
 
                     content += "<tr><td>" + result.boGoodsName + "</td><td>" + result.boPrice + "</td><td>" + (result.boStatus == 0 ? "未完成" : "已完成") + "</td><td>" + result.address.adrPhone + "</td><td>" + new Date(result.boCreatetime).toLocaleString() + "</td><td>" + (result.boAccountId == 1 ? "支付宝" : "微信") + "</td><td>";

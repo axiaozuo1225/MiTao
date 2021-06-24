@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>表单登录</title>
+	<script src="/js/jquery-1.11.1.min.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            font-family: '微软雅黑';
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            /* background-color: #F7F7F7; */
+            background: url('./img/wallpaper.jpg') no-repeat center /100% 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        ul {
+            margin: 0;
+            padding: 50px;
+            padding-top: 0px;
+            list-style: none;
+        }
+
+        .register {
+            width: 800px;
+            background-color: #F9F9F9;
+            border: 1px solid #CCC;
+            border-radius: 5px;
+        }
+
+        li {
+            display: flex;
+            margin: 20px 0;
+        }
+
+        label,
+        input {
+            display: block;
+            float: left;
+            height: 46px;
+            font-size: 24px;
+            box-sizing: border-box;
+            color: #333;
+        }
+
+        label {
+            width: 200px;
+            line-height: 46px;
+            margin-right: 30px;
+            text-align: right;
+        }
+
+        input {
+            width: 320px;
+            padding: 8px;
+            line-height: 1;
+            outline: none;
+            position: relative;
+        }
+
+        input.code {
+            width: 120px;
+        }
+
+        input.verify {
+            width: 190px;
+            margin-left: 10px;
+        }
+
+        input.disabled {
+            background-color: #CCC !important;
+            cursor: not-allowed !important;
+        }
+
+        input[type=button] {
+            border: none;
+            color: #FFF;
+            background-color: #E64145;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .tips {
+            width: 100%;
+            height: 40px;
+            text-align: center;
+        }
+
+        .tips p {
+            min-width: 300px;
+            max-width: 400px;
+            line-height: 40px;
+            margin: 0 auto;
+            color: #FFF;
+            display: none;
+            background-color: #C91623;
+        }
+
+        .submit:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+
+        span {
+            line-height: 46px;
+            padding-left: 20px;
+            font-size: 20px;
+            color: yellowgreen;
+            text-shadow: 0 0 20px yellowgreen;
+        }
+    </style>
+</head>
+
+<body style="background-color: cornflowerblue;">
+<div class="register">
+    <div class="tips">
+        <p>手机号不能为空</p>
+    </div>
+    <form id="ajaxForm">
+        <ul>
+            <li>
+                <label for="">验证手机</label>
+                <input type="text" name="userPhone" class="mobile">
+            </li>
+            <li>
+                <label for="">短信验证码</label>
+                <input type="text" name="code" class="code">
+                <input type="button" value="获取验证码" class="verify">
+            </li>
+            <li>
+                <label for=""></label>
+                <input type="button" class="submit" value="立即登录" id="login">
+            </li>
+        </ul>
+    </form>
+</div>
+<!-- 提示信息 -->
+
+</body>
+
+</html>
+
+<!-- 导入jQuery  -->
+<script src="/js/jquery-1.11.1.min.js"></script>
+
+<script>
+  $(function () {
+
+      $('.verify').click(function () {
+
+          var $phone = $('.mobile').val();//获取输入的电话号
+          if(!$phone){
+              $(".tips p").show() ;
+              return
+          }else{
+              $(".tips p").hide() ;
+          }
+          $(this).addClass("disabled");//点击获取验证码后，禁用该按钮，开始倒计时
+          var time = 60;//倒计时时间，自定义
+          var $this = $(this);//备份，定时器是异步的，此this非彼this
+          var timer = setInterval(function () {
+              time--;//开始倒计时
+              if (time == 0) {//当倒计时为0秒时，关闭定时器，更改按钮显示文本并设置为可以点击
+                  clearInterval(timer);
+                  $this.val('获取验证码');
+                  $this.removeClass("disabled");
+                  return;
+              }
+              $this.val('还剩' + time + "S");//显示剩余秒数
+
+
+          }, 1000);
+
+
+
+          $.get('user/sendSMS', {
+                  userPhone: $phone
+              },
+              function (data) {
+                  if(!data.flag){
+                      alert(data.msg)
+                      return;}
+
+              });
+
+
+      });
+
+      $("#login").click(function () {
+
+         $.post("user/login",$("#ajaxForm").serialize(),function (res) {
+
+             if(res.flag){//登录成功
+                 location.href="index.html"
+             }else{
+                 alert(res.msg)
+             }
+         },"json")
+
+
+
+          return false;
+      })
+  })
+</script>
